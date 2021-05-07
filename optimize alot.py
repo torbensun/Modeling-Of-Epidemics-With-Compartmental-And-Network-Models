@@ -4,7 +4,8 @@
  	else:
  		return 0;
  
- 
+ #must substitute f with the name of the function later 
+	
  def optimize(paramenters,d_paramenters, current_itter, current_eval, new_eval, sign, isbetter,current_paramenter,last_success,O_err, og_paramenters):
  	#basecase
 	if (current_itter-last_success>(O_err+6)): # failed to improve for a lot of tries
