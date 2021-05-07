@@ -5,7 +5,9 @@
  		return 0;
  
  #must substitute f with the name of the function later 
-	
+def f():
+	return optimize(paramenters,d_paramenters, current_itter, current_eval, new_eval, sign, isbetter,current_paramenter,last_success,O_err, og_paramenters);
+
  def optimize(paramenters,d_paramenters, current_itter, current_eval, new_eval, sign, isbetter,current_paramenter,last_success,O_err, og_paramenters):
  	#basecase
 	if (current_itter-last_success>(O_err+6)): # failed to improve for a lot of tries
@@ -20,7 +22,7 @@
 				current_itter=0
 				last_success=0
 				O_err=1
-				return f; 				# try the other direction
+				return f(); 				# try the other direction
 			 
 			if (sign==-1 and O_err>5)#if you tried both directions and it doesn't improve anymore		
 			d_paramenters=paramenters[current_paramenter]-og_paramenters[current_paramenter] #remeber what to change
@@ -31,8 +33,8 @@
 				last_success=0
 				O_err=0
 				current_paramenter=current_paramenter+1 	
-				return f;
-			return f; # repeat after increasing precesion
+				return f();
+			return f(); # repeat after increasing precesion
 				
 		if current_paramenter>=len(paramenters): #if all components are set
 		
@@ -43,7 +45,7 @@
 				current_itter=0
 				last_success=0
 				O_err=O_err+1
-				return f;
+				return f();
 				
 	else: # if it didn't fail that often
 		current_itter=current_itter+1
@@ -55,7 +57,7 @@
 			paramenters=paramenters+d_paramenters  # change paramenters accordingly
 			last_success=last_success+isbetter(new_eval,current_eval) # increases if success, stays the same else
 			current_eval=new_eval
-			return f; # and repeat
+			return f(); # and repeat
 			
 		else: # not all components are set
 			
@@ -64,7 +66,7 @@
 			new_eval=bew(paramenters) # check what altering the component does
 			last_success=last_success+isbetter(new_eval,current_eval) # increases if success, stays the same else
 			current_eval=new_eval # and repeat
-			return f;
+			return f();
 			
 			
 	
