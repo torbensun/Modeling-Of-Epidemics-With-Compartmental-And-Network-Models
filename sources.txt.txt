@@ -1,0 +1,11 @@
+in Media:
+	region 38 with borders (cut).png:
+		Von TUBS - Eigenes Werk Diese W3C-unbestimmte Vektorgrafik wurde mit Adobe Illustrator erstellt. Diese Datei wurde mit Commonist hochgeladen. Diese Datei enthält Elemente, die von folgender Datei entnommen oder adaptiert wurden: Germany, administrative divisions - de - colored.svg (von TUBS). Diese Datei enthält Elemente, die von folgender Datei entnommen oder adaptiert wurden: Landkreise, Kreise und kreisfreie Städte in Deutschland 2011-09-04.svg (von TUBS)., CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=29273127
+
+
+in External Data:
+	RKI Corona Landkreise.csv, RKI History.csv:
+		https://npgeo-corona-npgeo-de.hub.arcgis.com/search?collection=Dataset
+	Commuter Matrix.xlsx:
+		https://statistik.arbeitsagentur.de/DE/Navigation/Statistiken/Interaktive-Angebote/Pendleratlas/Pendleratlas-Nav.html
+
