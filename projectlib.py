@@ -139,8 +139,8 @@ def effective_infected(comTo, comFrom, N, i, infected, dimension):
     """Function to calculate the effective number of infected in a cell.
 
     Args:
-        comTo (callable(j)): function that returns commuters from cell.
-        comFrom (callable(j)): function that returns commuters to a cell.
+        comTo (callable(j)): function that returns array of commuters from cell.
+        comFrom (callable(j)): function that returns array of commuters to a cell.
         N (array): array with population of every cell
         i (integer): the cell of which the effective population is wanted.
         infected (array): array with number of infected from every cell
@@ -172,7 +172,9 @@ def effective_infected(comTo, comFrom, N, i, infected, dimension):
     return Ieff
 
 
-    
+
+
+
 
 #Section 2.3: Data Visualization
 
