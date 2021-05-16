@@ -11,10 +11,20 @@ import math
 #Section 1: Networks
 
 def undirect_adjacency(matrix):
+    """Turns adjacency matrix of a directed network into adjacency matrix of corresponding undirected network (add ij and ji)
+
+    Args:
+        matrix (array): Adjacency matrix of a directed network
+    """    
     #Puts sum of ij and ji cell in both ij and ji cell.
     matrix+=matrix.transpose()
 
 def unweight_adjacency(matrix):
+    """Turns adjacency matrix of a weighted network into simple adjacency matrix of corresponding unweighted network
+
+    Args:
+        matrix (array): Adjacency matrix of a weighted network
+    """    
     #Replaces non-zero cell entries with ones.
     for i in range(len(matrix)):
         for j in range(len(matrix)):
@@ -25,48 +35,63 @@ def unweight_adjacency(matrix):
 #For definition of intern region numbers -> see ..\Media\region 38 with border (cut).png
 
 def region_setup(mode):
-        #takes mode of network: 12 for Region12, 38 for Region38, more to be added
-        #returns array of associated RKI LK IDs, label dictionary of the structure: intern_region_number: LK name
-        #the following declarations may be moved into a database later
-        lk_hildesheim_id=3254
-        lk_holzminden_id=3255
-        lk_goslar_id=3153
-        lk_höxter_id=5762
-        lk_northeim_id=3155
-        lk_göttingen_id=3159
-        lk_harz_id=15085
-        lk_kassel_id=6633
-        sk_kassel_id=6611
-        lk_werrameißnerkreis_id=6636
-        lk_eichsfeld_id=16061
-        lk_nordhausen_id=16062
-        #remaining ids for Region38 to be added
-        if(mode==12):
-            region_ids=[lk_hildesheim_id,lk_holzminden_id,lk_goslar_id,lk_höxter_id,lk_northeim_id,lk_göttingen_id,lk_harz_id,lk_kassel_id,sk_kassel_id,lk_werrameißnerkreis_id,lk_eichsfeld_id,lk_nordhausen_id]
-            region_names=['Hildesheim','Holzminden','Goslar', 'Höxter','Northeim','Göttingen','Harz','Kassel (LK)','Kassel (SK)', 'Werra-Meißner-Kreis','Eichsfeld','Nordhausen']
-            labels={}
-            for intern_region_number in range(mode):
-                labels[intern_region_number]=region_names[intern_region_number]
-        elif(mode==38):
-            print("mode err: not yet implemented")
-        else:
-            print("mode err: invalid")
-        return region_ids,labels
+    """[summary]
+
+    Args:
+        mode (integer): clarifies chosen project Region: 12 for Region 12 or 38 for Region 38
+
+    Returns:
+        tuple:
+            array: contains RKI LK IDs of the respective intern regions (therefore of length mode), index is intern region number
+            dictionary: relates intern region number with name of LK
+    """    
+    lk_hildesheim_id=3254
+    lk_holzminden_id=3255
+    lk_goslar_id=3153
+    lk_höxter_id=5762
+    lk_northeim_id=3155
+    lk_göttingen_id=3159
+    lk_harz_id=15085
+    lk_kassel_id=6633
+    sk_kassel_id=6611
+    lk_werrameißnerkreis_id=6636
+    lk_eichsfeld_id=16061
+    lk_nordhausen_id=16062
+    #remaining ids for Region38 to be added
+    if(mode==12):
+        region_ids=[lk_hildesheim_id,lk_holzminden_id,lk_goslar_id,lk_höxter_id,lk_northeim_id,lk_göttingen_id,lk_harz_id,lk_kassel_id,sk_kassel_id,lk_werrameißnerkreis_id,lk_eichsfeld_id,lk_nordhausen_id]
+        region_names=['Hildesheim','Holzminden','Goslar', 'Höxter','Northeim','Göttingen','Harz','Kassel (LK)','Kassel (SK)', 'Werra-Meißner-Kreis','Eichsfeld','Nordhausen']
+        labels={}
+        for intern_region_number in range(mode):
+            labels[intern_region_number]=region_names[intern_region_number]
+    elif(mode==38):
+        print("mode err: not yet implemented")
+    else:
+        print("mode err: invalid")
+    return region_ids,labels
 
 def import_rki_history(region_ids, n):
-    #Takes array of RKI LK IDs and n for required n-day-incidence, returns the following:
-    #(0) case matrix with the format [intern_region_number][*][day(since beginning, to be clarified)]
-    #   where * can be: (structure may be changed later)
-    #   0: new cases at the day before
-    #   1: cumulative no. of cases
-    #   2: n-day-incidence per 100,000 inhabitants
-    #   3: -to be added- new deaths
-    #   4: -to be added- cumuative no. of deaths = current D
-    #   5: -to be added- new recoverd
-    #   6: -to be added- cumulative no. of recovered = current R
-    #   7: -to be added- current S
-    #   8: -to be added- current I
-    #(1) array containing population sizes
+    """Imports RKI History Data from ../External Data, manipulates it to be (locally) handled in context of the regarded region
+
+    Args:
+        region_ids (array): contains RKI AdmUnitIDs of respective LKs (this array may be output of region_setup)
+        n (integer): setting for desired n-day-incidence (usually 7)
+
+    Returns:
+        tuple:
+            array: of the format [intern_region_number][setting][day(since beginning, to be clarified)]
+                where setting can be: (structure may be changed later)
+                    0: new cases at the day before
+                    1: cumulative no. of cases
+                    2: n-day-incidence per 100,000 inhabitants
+                    3: -to be added- new deaths
+                    4: -to be added- cumuative no. of deaths = current D
+                    5: -to be added- new recoverd
+                    6: -to be added- cumulative no. of recovered = current R
+                    7: -to be added- current S
+                    8: -to be added- current I
+            array: contains population sizes, index is intern region number
+    """    
     #import case data etc.
     rki=pd.read_csv('External Data/RKI_History.csv', sep=',', header='infer')
     rki=rki.sort_values(by='Datum')
@@ -104,6 +129,17 @@ def import_rki_history(region_ids, n):
 #Section 2.2: Data Manipulation
 
 def n_day_moving_average(case_array,n):
+    """Computes moving average of any time-dependent quantity (mostly cases) over n days in one cell
+            Note (1): undefined for first (n-1) days, set to zero
+            Note (2): this function will most likely only be used by n_day_incidence
+
+    Args:
+        case_array (array): temporal development of a quantity
+        n (integer): days over which the average is computed (usually 7)
+
+    Returns:
+        array: moving average of the quantity in case_array over n days in one cell, computed for each day (=each entry)
+    """    
     output=np.zeros((len(case_array)))
     for i in range(len(case_array)):
         if(i>=n-1):
@@ -116,6 +152,16 @@ def n_day_moving_average(case_array,n):
     return output/n
 
 def n_day_incidence(case_array,pop,n):
+    """calculates n-day-incidence per 100,000 inhabitants in one cell
+
+    Args:
+        case_array (array): temporal development of a quantity
+        pop (integer): population size of the regarded cell
+        n (integer): setting for desired n-day-incidence (usually 7)
+
+    Returns:
+        array: contains n-day-incidence per 100,000 inhabitants, computed for each day (=each entry)
+    """    
     #calculates n-day-incidence per 100,000 inhabitants
     return n*n_day_moving_average(case_array,n)/pop*100000
 
