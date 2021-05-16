@@ -35,7 +35,7 @@ def unweight_adjacency(matrix):
 #For definition of intern region numbers -> see ..\Media\region 38 with border (cut).png
 
 def region_setup(mode):
-    """[summary]
+    """Assembles necessary AdmUnitIDs for future computations and labels for the chosen Region (12 or 38)
 
     Args:
         mode (integer): clarifies chosen project Region: 12 for Region 12 or 38 for Region 38
