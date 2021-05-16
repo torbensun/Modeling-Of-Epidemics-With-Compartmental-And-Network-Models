@@ -119,4 +119,73 @@ def n_day_incidence(case_array,pop,n):
     #calculates n-day-incidence per 100,000 inhabitants
     return n*n_day_moving_average(case_array,n)/pop*100000
 
+
+def effective_population(comFrom, N, i):
+    """Function to calculated the effective population in a cell.
+
+    Args:
+        comFrom (callable(j)): function that returns commuters from cell.
+        N (array): array with population of every cell
+        i (integer): the cell of which the effective population is wanted.
+
+    Returns:
+        float: the effective population in cell i.
+    """
+    return N[i] - np.sum(comFrom(i))
+
+
+
+def effective_infected(comTo, comFrom, N, i, infected, dimension):
+    """Function to calculate the effective number of infected in a cell.
+
+    Args:
+        comTo (callable(j)): function that returns commuters from cell.
+        comFrom (callable(j)): function that returns commuters to a cell.
+        N (array): array with population of every cell
+        i (integer): the cell of which the effective population is wanted.
+        infected (array): array with number of infected from every cell
+        dimension (integer): number of cells
+
+    Returns:
+        float: effective infected in cell i
+    """
+
+    # making the value to return
+    Ieff = infected[i]
+    
+    #variables for sum of commuters to and from
+    sto = 0
+    sfrom = 0
+    for k in range(dimension):
+        # adding commuters from all cells to i
+        sto += comTo(i)[k] * infected[k]
+        
+        # subtracting commuters from i to all cells
+        sfrom -= comFrom(i)[k]
+    
+    # adjusting for proportionality and applying the normalizing factor
+    sfrom *= infected[i]
+    
+    # adding the change from commuters
+    Ieff += (sfrom + sto)/N[i]
+
+    return Ieff
+
+
+    
+
 #Section 2.3: Data Visualization
+
+
+
+
+
+
+
+
+
+
+
+
+
+
