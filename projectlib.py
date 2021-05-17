@@ -85,7 +85,7 @@ def import_rki_history(region_ids, n):
                     1: cumulative no. of cases
                     2: n-day-incidence per 100,000 inhabitants
                     3: -to be added- new deaths
-                    4: -to be added- cumuative no. of deaths = current D
+                    4: -to be added- cumulative no. of deaths = current D
                     5: -to be added- new recoverd
                     6: -to be added- cumulative no. of recovered = current R
                     7: -to be added- current S
@@ -127,6 +127,22 @@ def import_rki_history(region_ids, n):
     return region_cases, region_popsize
 
 #Section 2.2: Data Manipulation
+
+def cumulate_data(case_array):
+    """ "integrates" new cases etc. over time and replaces new cases with accumulated cases
+
+    Args:
+        case_array (array): development of new cases over time
+
+    Returns:
+        array: development of cumulated cases over time
+    """    
+    cumulated=case_array.copy()
+    sum=0
+    for i in range(len(cumulated)):
+        sum+=cumulated[i]
+        cumulated[i]=sum
+    return cumulated
 
 def n_day_moving_average(case_array,n):
     """Computes moving average of any time-dependent quantity (mostly cases) over n days in one cell
