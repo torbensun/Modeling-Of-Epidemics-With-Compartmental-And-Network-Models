@@ -233,6 +233,31 @@ def effective_infected(comTo, comFrom, N, i, infected, dimension):
 
     return Ieff
 
+def periodic_heaviside(t, t0):
+    """Function to make a periodic heaviside. The period is 1.
+
+    Args:
+        t (float): current time
+        t0 (float): time that divides the heaviside, i.e. t >= t0 -> 1 and t < t0 -> 0 
+
+    Raises:
+        ValueError: To ensure that the give time is positiv
+        ValueError: To ensure that t0 is between 0 and 1
+
+    Returns:
+        float: either 1 or 0 depending on t relativ to t0
+    """
+    if t < 1 and t >= 0:
+        return np.heaviside(t - t0, 1)
+    elif t < 0 or t0 < 0:
+        raise ValueError("Time must be positiv")
+    elif t0 > 1:
+        raise ValueError("t0 must be between 0 and 1")
+    else:
+        string = str(t).split(".")
+        t = float("0." + string[1])
+        return np.heaviside(t - t0, 1)
+
 
 
 
