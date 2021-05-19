@@ -337,6 +337,32 @@ def periodic_heaviside(t, t0):
 
 
 
+#Section 2.4: Comparing Data
+
+
+def squared_variance(numerical_data, external_data):
+    """Simple function to calculate the variance, or deviation, of two datasets
+
+    Args:
+        numerical_data (array): numerical dataset
+        external_data (array): dataset to compare with the numerical dataset 
+
+    Raises:
+        ValueError: arrays have to be the same length
+
+    Returns:
+        float: the deviation of the datasets
+    """
+    
+    sum = 0
+
+    if len(numerical_data) != len(external_data):
+        raise ValueError("Arrays have to be of same length")
+
+    for i in range(len(numerical_data)):
+        sum += (numerical_data[i] - external_data[i])**2
+    
+    return sum
 
 
 
