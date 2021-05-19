@@ -241,22 +241,32 @@ def periodic_heaviside(t, t0):
         t0 (float): time that divides the heaviside, i.e. t >= t0 -> 1 and t < t0 -> 0 
 
     Raises:
-        ValueError: To ensure that the give time is positiv
+        ValueError: To ensure that the give time is positive
         ValueError: To ensure that t0 is between 0 and 1
 
     Returns:
         float: either 1 or 0 depending on t relativ to t0
     """
-    if t < 1 and t >= 0:
-        return np.heaviside(t - t0, 1)
-    elif t < 0 or t0 < 0:
-        raise ValueError("Time must be positiv")
+    # returning error in case t isn't positive
+    if t < 0 or t0 < 0:
+        raise ValueError("Time must be positive")
+    
+    # the t0 can only be between 0 and 1. Thus, an error will appear if this is not fullfilled
     elif t0 > 1:
         raise ValueError("t0 must be between 0 and 1")
+    
+    # in case of t being between 0 and 1 there is no need of further manipulation
+    elif t < 1 and t >= 0:
+        return np.heaviside(t - t0, 1)
+    
+    # for t > 1 it needs to be modified to fit the periodic character of the function
     else:
+        # ignoring everything that isn't a decimal in t, as the periode is 1
         string = str(t).split(".")
+        # the new time is thusly 
         t = float("0." + string[1])
         return np.heaviside(t - t0, 1)
+
 
 
 
