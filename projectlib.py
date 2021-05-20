@@ -102,7 +102,8 @@ def import_rki_data(region_ids, n):
     lk=np.array(rki['AdmUnitId'])
     lk_comp_num=len(lk)
     day=np.array(rki['Datum'])
-    case=np.array(rki['AnzFallNeu'])#other options not coherent
+    case=np.array(rki['AnzFallErkrankung'])#other options not coherent
+    case_add=np.array(rki['AnzFallNeu'])
     case_cum=np.array(rki['KumFall'])
 
     #import population data
@@ -115,7 +116,7 @@ def import_rki_data(region_ids, n):
     time=len([a for a in lk if a==0])
 
     #similar process for RKI_COVID19 (contains information on new deaths and recovered)
-    rki2=pd.read_csv('External Data/RKI_COVID19.csv', sep=',', header='infer')
+    rki2=pd.read_csv('External Data/RKI_COVID19_cut_Region12.csv', sep=',', header='infer')
     rki2=rki2.sort_values(by='Meldedatum')
     rki2=rki2[(rki2['Meldedatum']>='2020/03/01')]
     lk2=np.array(rki2['IdLandkreis'])
