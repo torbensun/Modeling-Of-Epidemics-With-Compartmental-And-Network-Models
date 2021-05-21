@@ -7,6 +7,7 @@ import networkx as nx
 import matplotlib.pyplot as plt, matplotlib.cm as cm, matplotlib.animation as animation
 from IPython.display import HTML
 import math
+from datetime import datetime as datt, date as date
 
 #Section 1: Networks
 
@@ -17,7 +18,7 @@ def undirect_adjacency(matrix):
         matrix (array): Adjacency matrix of a directed network
     """    
     #Puts sum of ij and ji cell in both ij and ji cell.
-    matrix+=matrix.transpose()
+    matrix += matrix.transpose()
 
 def unweight_adjacency(matrix):
     """Turns adjacency matrix of a weighted network into simple adjacency matrix of corresponding unweighted network
@@ -28,8 +29,8 @@ def unweight_adjacency(matrix):
     #Replaces non-zero cell entries with ones.
     for i in range(len(matrix)):
         for j in range(len(matrix)):
-            if matrix[i][j]!=0:
-                matrix[i][j]=1
+            if matrix[i][j] != 0:
+                matrix[i][j] = 1
 
 #Section 2.1: RKI Data Import
 #For definition of intern region numbers -> see ..\Media\region 38 with border (cut).png
@@ -43,26 +44,26 @@ def region_setup(mode):
             array: contains RKI LK IDs of the respective intern regions (therefore of length mode), index is intern region number
             dictionary: relates intern region number with name of LK
     """    
-    lk_hildesheim_id=3254
-    lk_holzminden_id=3255
-    lk_goslar_id=3153
-    lk_höxter_id=5762
-    lk_northeim_id=3155
-    lk_göttingen_id=3159
-    lk_harz_id=15085
-    lk_kassel_id=6633
-    sk_kassel_id=6611
-    lk_werrameißnerkreis_id=6636
-    lk_eichsfeld_id=16061
-    lk_nordhausen_id=16062
+    lk_hildesheim_id = 3254
+    lk_holzminden_id = 3255
+    lk_goslar_id = 3153
+    lk_höxter_id = 5762
+    lk_northeim_id = 3155
+    lk_göttingen_id = 3159
+    lk_harz_id = 15085
+    lk_kassel_id = 6633
+    sk_kassel_id = 6611
+    lk_werrameißnerkreis_id = 6636
+    lk_eichsfeld_id = 16061
+    lk_nordhausen_id = 16062
     #remaining ids for Region38 to be added
-    if(mode==12):
-        region_ids=[lk_hildesheim_id,lk_holzminden_id,lk_goslar_id,lk_höxter_id,lk_northeim_id,lk_göttingen_id,lk_harz_id,lk_kassel_id,sk_kassel_id,lk_werrameißnerkreis_id,lk_eichsfeld_id,lk_nordhausen_id]
-        region_names=['Hildesheim','Holzminden','Goslar', 'Höxter','Northeim','Göttingen','Harz','Kassel (LK)','Kassel (SK)', 'Werra-Meißner-Kreis','Eichsfeld','Nordhausen']
-        labels={}
+    if(mode == 12):
+        region_ids = [lk_hildesheim_id,lk_holzminden_id,lk_goslar_id,lk_höxter_id,lk_northeim_id,lk_göttingen_id,lk_harz_id,lk_kassel_id,sk_kassel_id,lk_werrameißnerkreis_id,lk_eichsfeld_id,lk_nordhausen_id]
+        region_names = ['Hildesheim','Holzminden','Goslar', 'Höxter','Northeim','Göttingen','Harz','Kassel (LK)','Kassel (SK)', 'Werra-Meißner-Kreis','Eichsfeld','Nordhausen']
+        labels = {}
         for intern_region_number in range(mode):
-            labels[intern_region_number]=region_names[intern_region_number]
-    elif(mode==38):
+            labels[intern_region_number] = region_names[intern_region_number]
+    elif(mode == 38):
         print("mode err: not yet implemented")
     else:
         print("mode err: invalid")
@@ -94,91 +95,100 @@ def import_rki_data(region_ids, n):
                     3: D
             array: contains population sizes, index is intern region number
     """    
-    #import case data etc.
-    rki=pd.read_csv('External Data/RKI_History.csv', sep=',', header='infer')
-    rki=rki.sort_values(by='Datum')
+    #import case data etc. from RKI_History
+    rki = pd.read_csv('External Data/RKI_History.csv', sep = ',', header = 'infer')
+    rki = rki.sort_values(by = 'Datum')
 
     #write data in arrays
-    lk=np.array(rki['AdmUnitId'])
-    lk_comp_num=len(lk)
-    day=np.array(rki['Datum'])
-    case=np.array(rki['AnzFallErkrankung'])#other options not coherent
-    case_add=np.array(rki['AnzFallMeldung'])
-    case_cum=np.array(rki['KumFall'])
+    lk = np.array(rki['AdmUnitId'])
+    lk_comp_num = len(lk)
+    day = np.array(rki['Datum'])
+    case = np.array(rki['AnzFallErkrankung'])
+    case_add = np.array(rki['AnzFallMeldung']) #for additions, may be unused
+    case_cum = np.array(rki['KumFall'])
 
-    #import population data
-    pop=pd.read_csv('External Data/RKI_Corona_Landkreise.csv', sep=',', header='infer')
-    lk_popcalc=np.array(pop['AdmUnitId'])
-    lk_popsize=np.array(pop['EWZ'])
-    lk_num=len(lk_popsize)
+    #import population data and write in array
+    pop = pd.read_csv('External Data/RKI_Corona_Landkreise.csv', sep = ',', header = 'infer')
+    lk_popcalc = np.array(pop['AdmUnitId'])
+    lk_popsize = np.array(pop['EWZ'])
+    lk_num = len(lk_popsize)
 
     #find out number of time steps
-    time=len([a for a in lk if a==0])
+    time = len([a for a in lk if a == 0])
 
     #similar process for RKI_COVID19 (contains information on new deaths and recovered)
-    rki2=pd.read_csv('External Data/RKI_COVID19_cut_Region12.csv', sep=',', header='infer')
-    rki2=rki2.sort_values(by='Meldedatum')
-    rki2=rki2[(rki2['Meldedatum']>='2020/03/01')]
-    lk2=np.array(rki2['IdLandkreis'])
-    newdead2=np.array(rki2['AnzahlTodesfall'])
-    newrec2=np.array(rki2['AnzahlGenesen'])
-    newcase2=np.array(rki2['AnzahlFall'])
-    newdead2check=np.array(rki2['NeuerTodesfall'])
-    newrec2check=np.array(rki2['NeuGenesen'])
-    newcase2check=np.array(rki2['NeuerFall'])
-    date2=np.array(rki2['Meldedatum'])
-    rki2len=len(lk2)
-    cd=date2[0]
-    counter=0
-    date2[0]=counter
-    for i in range(1,rki2len):
-        if (date2[i]!=cd):
-            counter+=1
-            cd=date2[i]
-        date2[i]=counter
+    #all variables that were initially dependend on this database carry number 2 in the name
 
-    dimensions=9 #as shown in description
+    rki2 = pd.read_csv('External Data/RKI_COVID19_cut_Region12.csv', sep = ',', header = 'infer')
+    rki2 = rki2.sort_values(by = 'Meldedatum')
+    rki2 = rki2[(rki2['Meldedatum'] >= '2020/03/01')]
+    lk2 = np.array(rki2['IdLandkreis'])
+    newdead2 = np.array(rki2['AnzahlTodesfall'])
+    newrec2 = np.array(rki2['AnzahlGenesen'])
+    newcase2 = np.array(rki2['AnzahlFall'])
+
+    #indicator of case type (see documentation on https://www.arcgis.com/home/item.html?id=f10774f1c63e40168479a1feb6c7ca74)
+    newdead2check = np.array(rki2['NeuerTodesfall'])
+    newrec2check = np.array(rki2['NeuGenesen'])
+    newcase2check = np.array(rki2['NeuerFall'])
+
+    #convert dates to days from beginning
+    date2 = np.array(rki2['Meldedatum'])
+    rki2len = len(lk2)
+    date2_day = np.zeros((rki2len))
+    for i in range(rki2len):
+        if(date2[i] == "2020/03/01"):
+            date2_day[i][:10] = int(0)
+        else:
+            date2_day[i] = int((datt.strptime(date2[i][:10], '%Y/%m/%d') - datt(2020,3,1)).days)
+        date2_day[i]=int(date2_day[i])
+
+    dimensions = 9 #as shown in description
 
     #create and fill regional array
-    region_num=len(region_ids)
-    required_duration=max(time,date2[-1]+1)#may be necessary if files are not updated simultaneously
-    region_cases=np.zeros((region_num,dimensions, required_duration))
-    region_popsize=np.zeros((region_num))
-    region_compartment_distribution=np.zeros((region_num,4, required_duration))
+
+    #set up regional case array and regional compartment dirtribution array
+    region_num = len(region_ids)
+    required_duration = int(max(time,date2_day[-1] +1)) #may be necessary if files are not updated simultaneously
+    region_cases = np.zeros((region_num,dimensions, required_duration))
+    region_popsize = np.zeros((region_num))
+    region_compartment_distribution = np.zeros((region_num,4, required_duration))
+
+
     for intern_region_number in range(region_num): #for rki and rki2, two different processes
-        current_time=0
+        current_time = 0
         for i in range(lk_comp_num):
-            if lk[i]==region_ids[intern_region_number] and current_time<time:
-                region_cases[intern_region_number][0][current_time]=case[i]+case_add[i]
-                region_cases[intern_region_number][1][current_time]=case_cum[i]
-                current_time+=1  
+            if lk[i] == region_ids[intern_region_number] and current_time < time:
+                region_cases[intern_region_number][0][current_time] = case[i] + case_add[i]
+                region_cases[intern_region_number][1][current_time] = case_cum[i]
+                current_time += 1  
         for k in range(rki2len):
             if lk2[k] == region_ids[intern_region_number]: #follow documentation on https://www.arcgis.com/home/item.html?id=f10774f1c63e40168479a1feb6c7ca74
                 #if(newcase2check[k]==1 or newcase2check[k]==0):
                     #region_cases[intern_region_number][0][date2[k]]+=newcase2[k]
                 if(newdead2check[k] == 1 or newdead2check[k] == 0):
-                    region_cases[intern_region_number][3][date2[k]] += newdead2[k]
-                if((newrec2check[k] == 1 or newrec2check[k] == 0) and (date2[k]+14<date2[-1]+1)):
-                    region_cases[intern_region_number][5][date2[k]+14] += newrec2[k]
+                    region_cases[intern_region_number][3][int(date2_day[k])] += newdead2[k]
+                if((newrec2check[k] == 1 or newrec2check[k] == 0) and (date2_day[k] + 14 < date2_day[-1] +1 )):
+                    region_cases[intern_region_number][5][int(date2_day[k])+14] += newrec2[k]
         for j in range(lk_num):
             if lk_popcalc[j] == region_ids[intern_region_number]:
-                region_popsize[intern_region_number]=lk_popsize[j]
-                region_cases[intern_region_number][2]=n_day_incidence(region_cases[intern_region_number][0],region_popsize[intern_region_number],n)
-        region_cases[intern_region_number][1]=cumulate_data(region_cases[intern_region_number][0])
-        region_cases[intern_region_number][4]=cumulate_data(region_cases[intern_region_number][3])
-        region_cases[intern_region_number][6]=cumulate_data(region_cases[intern_region_number][5])
-        region_cases[intern_region_number][7]=region_popsize[intern_region_number]*np.ones((required_duration))-region_cases[intern_region_number][1]
-        region_cases[intern_region_number][8]=region_cases[intern_region_number][1]-region_cases[intern_region_number][4]-region_cases[intern_region_number][6]
-        region_compartment_distribution[intern_region_number][0] = region_cases[intern_region_number][7]/region_popsize[intern_region_number]
-        region_compartment_distribution[intern_region_number][1] = region_cases[intern_region_number][8]/region_popsize[intern_region_number]
-        region_compartment_distribution[intern_region_number][2] = region_cases[intern_region_number][6]/region_popsize[intern_region_number]
-        region_compartment_distribution[intern_region_number][3] = region_cases[intern_region_number][4]/region_popsize[intern_region_number]
+                region_popsize[intern_region_number] = lk_popsize[j]
+                region_cases[intern_region_number][2] = n_day_incidence(region_cases[intern_region_number][0],region_popsize[intern_region_number],n)
+        region_cases[intern_region_number][1] = cumulate_data(region_cases[intern_region_number][0])
+        region_cases[intern_region_number][4] = cumulate_data(region_cases[intern_region_number][3])
+        region_cases[intern_region_number][6] = cumulate_data(region_cases[intern_region_number][5])
+        region_cases[intern_region_number][7] = region_popsize[intern_region_number] * np.ones((required_duration)) - region_cases[intern_region_number][1]
+        region_cases[intern_region_number][8] = region_cases[intern_region_number][1] - region_cases[intern_region_number][4] - region_cases[intern_region_number][6]
+        region_compartment_distribution[intern_region_number][0] = region_cases[intern_region_number][7] / region_popsize[intern_region_number]
+        region_compartment_distribution[intern_region_number][1] = region_cases[intern_region_number][8] / region_popsize[intern_region_number]
+        region_compartment_distribution[intern_region_number][2] = region_cases[intern_region_number][6] / region_popsize[intern_region_number]
+        region_compartment_distribution[intern_region_number][3] = region_cases[intern_region_number][4] / region_popsize[intern_region_number]
     return region_cases, region_compartment_distribution, region_popsize
 
 
 def update_rki_data_arrays(region_ids,n):
     """Saves results from import_rki_data in arrays directly in the Internal Data directory"""
-    rki_region_cases, rki_region_compartment_distribution,pop=import_rki_data(region_ids,n)
+    rki_region_cases, rki_region_compartment_distribution,pop = import_rki_data(region_ids,n)
     np.save('Internal Data/rki_region_cases.npy',rki_region_cases)
     np.save('Internal Data/rki_region_compartment_ditribution.npy',rki_region_compartment_distribution)
 
