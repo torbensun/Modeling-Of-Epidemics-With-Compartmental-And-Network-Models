@@ -103,7 +103,7 @@ def import_rki_data(region_ids, n):
     lk_comp_num=len(lk)
     day=np.array(rki['Datum'])
     case=np.array(rki['AnzFallErkrankung'])#other options not coherent
-    case_add=np.array(rki['AnzFallNeu'])
+    case_add=np.array(rki['AnzFallMeldung'])
     case_cum=np.array(rki['KumFall'])
 
     #import population data
@@ -149,30 +149,30 @@ def import_rki_data(region_ids, n):
         current_time=0
         for i in range(lk_comp_num):
             if lk[i]==region_ids[intern_region_number] and current_time<time:
-                region_cases[intern_region_number][0][current_time]=case[i]
+                region_cases[intern_region_number][0][current_time]=case[i]+case_add[i]
                 region_cases[intern_region_number][1][current_time]=case_cum[i]
                 current_time+=1  
         for k in range(rki2len):
-            if lk2[k]==region_ids[intern_region_number]: #follow documentation on https://www.arcgis.com/home/item.html?id=f10774f1c63e40168479a1feb6c7ca74
-                #if(newcase2check[k]==1 or newcase2check[k]==1):
+            if lk2[k] == region_ids[intern_region_number]: #follow documentation on https://www.arcgis.com/home/item.html?id=f10774f1c63e40168479a1feb6c7ca74
+                #if(newcase2check[k]==1 or newcase2check[k]==0):
                     #region_cases[intern_region_number][0][date2[k]]+=newcase2[k]
-                #if(newdead2check[k]==1 or newdead2check[k]==1):
-                region_cases[intern_region_number][3][date2[k]]+=newdead2[k]
-                #if(newrec2check[k]==1 or newrec2check[k]==1):
-                region_cases[intern_region_number][5][date2[k]]+=newrec2[k]
+                if(newdead2check[k] == 1 or newdead2check[k] == 0):
+                    region_cases[intern_region_number][3][date2[k]] += newdead2[k]
+                if((newrec2check[k] == 1 or newrec2check[k] == 0) and (date2[k]+14<date2[-1]+1)):
+                    region_cases[intern_region_number][5][date2[k]+14] += newrec2[k]
         for j in range(lk_num):
-            if lk_popcalc[j]==region_ids[intern_region_number]:
+            if lk_popcalc[j] == region_ids[intern_region_number]:
                 region_popsize[intern_region_number]=lk_popsize[j]
                 region_cases[intern_region_number][2]=n_day_incidence(region_cases[intern_region_number][0],region_popsize[intern_region_number],n)
-        #region_cases[intern_region_number][1]=cumulate_data(region_cases[intern_region_number][0])
+        region_cases[intern_region_number][1]=cumulate_data(region_cases[intern_region_number][0])
         region_cases[intern_region_number][4]=cumulate_data(region_cases[intern_region_number][3])
         region_cases[intern_region_number][6]=cumulate_data(region_cases[intern_region_number][5])
         region_cases[intern_region_number][7]=region_popsize[intern_region_number]*np.ones((required_duration))-region_cases[intern_region_number][1]
         region_cases[intern_region_number][8]=region_cases[intern_region_number][1]-region_cases[intern_region_number][4]-region_cases[intern_region_number][6]
-        region_compartment_distribution[intern_region_number][0]=region_cases[intern_region_number][7]/region_popsize[intern_region_number]
-        region_compartment_distribution[intern_region_number][1]=region_cases[intern_region_number][8]/region_popsize[intern_region_number]
-        region_compartment_distribution[intern_region_number][2]=region_cases[intern_region_number][6]/region_popsize[intern_region_number]
-        region_compartment_distribution[intern_region_number][3]=region_cases[intern_region_number][4]/region_popsize[intern_region_number]
+        region_compartment_distribution[intern_region_number][0] = region_cases[intern_region_number][7]/region_popsize[intern_region_number]
+        region_compartment_distribution[intern_region_number][1] = region_cases[intern_region_number][8]/region_popsize[intern_region_number]
+        region_compartment_distribution[intern_region_number][2] = region_cases[intern_region_number][6]/region_popsize[intern_region_number]
+        region_compartment_distribution[intern_region_number][3] = region_cases[intern_region_number][4]/region_popsize[intern_region_number]
     return region_cases, region_compartment_distribution, region_popsize
 
 
