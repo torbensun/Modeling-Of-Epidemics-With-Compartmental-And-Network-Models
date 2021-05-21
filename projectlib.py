@@ -270,16 +270,20 @@ def effective_infected(comTo, comFrom, N, i, infected, dimension):
 
     # making the value to return
     Ieff = infected[i]
+
+    # array for commuters from and to
+    cfrom = comFrom(i)
+    cto = comTo(i)
     
     #variables for sum of commuters to and from
     sto = 0
     sfrom = 0
     for k in range(dimension):
         # adding commuters from all cells to i
-        sto += comTo(i)[k] * infected[k]
+        sto += cto[k] * infected[k]
         
         # subtracting commuters from i to all cells
-        sfrom -= comFrom(i)[k]
+        sfrom -= cfrom[k]
     
     # adjusting for proportionality and applying the normalizing factor
     sfrom *= infected[i]
