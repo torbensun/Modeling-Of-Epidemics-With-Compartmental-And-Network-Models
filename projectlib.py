@@ -138,9 +138,9 @@ def import_rki_data(region_ids, n):
     date2_day = np.zeros((rki2len))
     for i in range(rki2len):
         if(date2[i] == "2020/03/01"):
-            date2_day[i][:10] = int(0)
+            date2_day[i][:10] = 0
         else:
-            date2_day[i] = int((datt.strptime(date2[i][:10], '%Y/%m/%d') - datt(2020,3,1)).days)
+            date2_day[i] = (datt.strptime(date2[i][:10], '%Y/%m/%d') - datt(2020,3,1)).days
         date2_day[i]=int(date2_day[i])
 
     dimensions = 9 #as shown in description
@@ -186,11 +186,36 @@ def import_rki_data(region_ids, n):
     return region_cases, region_compartment_distribution, region_popsize
 
 
-def update_rki_data_arrays(region_ids,n):
+def update_rki_data_arrays(mode,n):
     """Saves results from import_rki_data in arrays directly in the Internal Data directory"""
-    rki_region_cases, rki_region_compartment_distribution,pop = import_rki_data(region_ids,n)
-    np.save('Internal Data/rki_region_cases.npy',rki_region_cases)
-    np.save('Internal Data/rki_region_compartment_ditribution.npy',rki_region_compartment_distribution)
+
+    rki_region_cases, rki_region_compartment_distribution,pop = import_rki_data(region_setup(mode)[0],n)
+    if(mode == 12):
+        np.save('Internal Data/rki_region_cases12.npy',rki_region_cases)
+        np.save('Internal Data/rki_region_compartment_distribution12.npy',rki_region_compartment_distribution)
+    elif(mode == 38):
+        np.save('Internal Data/rki_region_cases38.npy',rki_region_cases)
+        np.save('Internal Data/rki_region_compartment_distribution38.npy',rki_region_compartment_distribution)
+
+
+def initial_compartment_distribution(mode, date):
+    """provides the requested initial compartment distribution
+
+    Args:
+        mode (integer): regarded region ()
+        date (string): date that is to be considered day zero in the format: "YYYY/MM/DD"
+
+    Returns:
+        array: initial compartment distribution:
+            indices: 0:S, 1:I, 2:R, 3:D (as usual)
+    """    
+    day=int((datt.strptime(date[:10], '%Y/%m/%d') - datt(2020,3,1)).days)
+    if(mode == 12):
+        return np.load('Internal Data/rki_region_compartment_distribution12.npy')[:,:,day]
+    elif(mode == 38):
+        print("mode error: not yet available")
+    else:
+        print("mode error: invalid argument")
 
 #Section 2.2: Data Manipulation
 
@@ -203,11 +228,11 @@ def cumulate_data(case_array):
     Returns:
         array: development of cumulated cases over time
     """    
-    cumulated=case_array.copy()
-    sum=0
+    cumulated = case_array.copy()
+    sum = 0
     for i in range(len(cumulated)):
-        sum+=cumulated[i]
-        cumulated[i]=sum
+        sum += cumulated[i]
+        cumulated[i] = sum
     return cumulated
 
 def n_day_moving_average(case_array,n):
