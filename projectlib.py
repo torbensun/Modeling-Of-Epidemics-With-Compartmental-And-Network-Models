@@ -43,6 +43,7 @@ def region_setup(mode):
         tuple:
             array: contains RKI LK IDs of the respective intern regions (therefore of length mode), index is intern region number
             dictionary: relates intern region number with name of LK
+            dictionary: relates intern region number with abbreviation (KFZ-style, no alternative in Germany) of LK
     """    
     lk_hildesheim_id = 3254
     lk_holzminden_id = 3255
@@ -56,18 +57,52 @@ def region_setup(mode):
     lk_werrameißnerkreis_id = 6636
     lk_eichsfeld_id = 16061
     lk_nordhausen_id = 16062
-    #remaining ids for Region38 to be added
+    
+    #from here on: Region38
+    region_hannover_id = 3241
+    lk_schaumburg_id = 3257
+    lk_hamelnpyrmont_id = 3252
+    lk_lippe_id = 5766
+    sk_bielefeld_id = 5711
+    lk_gütersloh_id = 5754
+    lk_paderborn_id = 5774
+    lk_soest_id = 5974
+    lk_hochsauerlandkreis_id = 5958
+    lk_waldeckfrankenberg_id = 6635
+    lk_schwalmederkreis_id = 6634
+    lk_hersfeldrotenburg_id = 6632
+    lk_wartburgkreis_id = 16063
+    sk_eisenach_id = 16056
+    lk_unstruthainichkreis_id = 16064
+    lk_kyffhäuserkreis_id = 16065
+    lk_mansfeldsüdharz_id = 15087
+    lk_salzlandkreis_id = 15089
+    sk_magdeburg_id = 15003
+    lk_börde_id = 15083
+    lk_helmstedt_id = 3154
+    sk_wolfsburg_id = 3103
+    lk_wolfenbüttel_id = 3158
+    sk_braunschweig_id = 3103
+    sk_salzgitter_id = 3102
+    lk_peine_id = 3157
+
     if(mode == 12):
         region_ids = [lk_hildesheim_id,lk_holzminden_id,lk_goslar_id,lk_höxter_id,lk_northeim_id,lk_göttingen_id,lk_harz_id,lk_kassel_id,sk_kassel_id,lk_werrameißnerkreis_id,lk_eichsfeld_id,lk_nordhausen_id]
         region_names = ['Hildesheim','Holzminden','Goslar', 'Höxter','Northeim','Göttingen','Harz','Kassel (LK)','Kassel (SK)', 'Werra-Meißner-Kreis','Eichsfeld','Nordhausen']
         labels = {}
+        short_labels = {}
         for intern_region_number in range(mode):
             labels[intern_region_number] = region_names[intern_region_number]
     elif(mode == 38):
-        print("mode err: not yet implemented")
+        region_ids = [lk_hildesheim_id,lk_holzminden_id,lk_goslar_id,lk_höxter_id,lk_northeim_id,lk_göttingen_id,lk_harz_id,lk_kassel_id,sk_kassel_id,lk_werrameißnerkreis_id,lk_eichsfeld_id,lk_nordhausen_id,region_hannover_id,lk_schaumburg_id,lk_hamelnpyrmont_id,lk_lippe_id,sk_bielefeld_id,lk_gütersloh_id,lk_paderborn_id,lk_soest_id,lk_hochsauerlandkreis_id,lk_waldeckfrankenberg_id,lk_schwalmederkreis_id,lk_hersfeldrotenburg_id,lk_wartburgkreis_id,sk_eisenach_id,lk_unstruthainichkreis_id,lk_kyffhäuserkreis_id,lk_mansfeldsüdharz_id,lk_salzlandkreis_id,sk_magdeburg_id,lk_börde_id,lk_helmstedt_id,sk_wolfsburg_id,lk_wolfenbüttel_id,sk_braunschweig_id,sk_salzgitter_id,lk_peine_id]
+        region_names = ['Hildesheim','Holzminden','Goslar', 'Höxter','Northeim','Göttingen','Harz','Kassel (LK)','Kassel (SK)', 'Werra-Meißner-Kreis','Eichsfeld','Nordhausen','Hannover','Schaumburg','Hameln-Pyrmont','Lippe','Bielefeld','Gütersloh','Paderborn','Soest','Hochsauerlandkreis','Waldeck-Frankenberg','Schwalm-Eder-Kreis','Hersfeld-Rotenburg','Wartburgkreis','Eisenach','Unstrut-Hainich-Kreis','Kyffhäuserkreis','Mansfeld-Südharz','Salzlandkreis','Magdeburg','Börde','Helmstedt','Wolfsburg','Wolfenbüttel','Braunschweig','Salzgitter','Peine']
+        labels = {}
+        short_labels = {}
+        for intern_region_number in range(mode):
+            labels[intern_region_number] = region_names[intern_region_number]
     else:
         print("mode err: invalid")
-    return region_ids,labels
+    return region_ids,labels,short_labels
 
 def import_rki_data(region_ids, n):
     """Imports RKI History Data from ../External Data, manipulates it to be (locally) handled in context of the regarded region
@@ -213,7 +248,7 @@ def initial_compartment_distribution(mode, date):
     if(mode == 12):
         return np.load('Internal Data/rki_region_compartment_distribution12.npy')[:,:,day]
     elif(mode == 38):
-        print("mode error: not yet available")
+        return np.load('Internal Data/rki_region_compartment_distribution38.npy')[:,:,day]
     else:
         print("mode error: invalid argument")
 
