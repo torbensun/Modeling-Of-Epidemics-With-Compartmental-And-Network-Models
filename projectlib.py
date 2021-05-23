@@ -123,6 +123,7 @@ def import_rki_data(region_ids, n):
                     7: current no. of susceptible
                     8: current no. of infected
             array: SIRD compartment distribution of the format [intern_region_number][compartment][day(since beginning, day zero=2020/03/01)]
+                warning: invalid/useless for last 14 days of input data!
                 where compartment can be:
                     0: S
                     1: I
@@ -222,7 +223,7 @@ def import_rki_data(region_ids, n):
 
 
 def update_rki_data_arrays(mode,n):
-    """Saves results from import_rki_data in arrays directly in the Internal Data directory"""
+    """Saves results from import_rki_data in arrays directly in the Internal Data directory, warning: invalid/useless for last 14 days of input data"""
 
     rki_region_cases, rki_region_compartment_distribution,pop = import_rki_data(region_setup(mode)[0],n)
     if(mode == 12):
@@ -231,10 +232,11 @@ def update_rki_data_arrays(mode,n):
     elif(mode == 38):
         np.save('Internal Data/rki_region_cases38.npy',rki_region_cases)
         np.save('Internal Data/rki_region_compartment_distribution38.npy',rki_region_compartment_distribution)
-
+    else:
+        print('mode error: invalid argument')
 
 def initial_compartment_distribution(mode, date):
-    """provides the requested initial compartment distribution
+    """provides the requested initial compartment distribution, warning: invalid/useless for last 14 days of input data
 
     Args:
         mode (integer): regarded region ()
