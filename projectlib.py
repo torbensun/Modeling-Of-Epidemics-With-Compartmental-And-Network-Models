@@ -403,6 +403,52 @@ def periodic_heaviside(t, t0):
 
 
 
+def jacobi(data, comp, model, t0):
+
+
+    # TODO need to finish this function. Remaining are almost all non-trivial blocks
+
+    # initializing the matrix that will be returned
+
+    #jac = np.array([np.zeros(data.dimension * 4) for i in range(data.dimension * 4)])
+
+    # initializing zero blocks of jacobian
+
+    zeroBlock = np.array([np.zeros(data.dimension) for i in range(data.dimension)])
+    SS = np.array([np.zeros(data.dimension) for i in range(data.dimension)])
+    SI = SS
+    IS = SS
+    II = SS
+    RI = SS
+    DI = SS
+
+
+
+    if model == "constant":
+        for i in range(data.dimension):
+
+            #variable for sum in SS
+            m = 0
+            for k in range(data.dimension):
+                m += data.commutersFrom(i)[k] * effective_infected(data.commutersTo, data.commutersFrom, data.N, k, comp[data.dimension:2 * data.dimension], data.dimension)
+            SS[i, i] = - ((1 - data.commuters_day)*data.alpha*array[data.dimension + i] + \
+                    data.commuters_day*data.alpha  / data.N[i] * (effective_population(data.commutersFrom, data.N, i) * \
+                    effective_infected(data.commutersTo, data.commutersFrom, data.N, i, comp[data.dimension:2 * data.dimension], data.dimension) + m))
+            for k in range(data.dimension):
+                
+        
+        
+        
+        
+        IS = SS
+
+    elif model == "heaviside":
+
+    
+
+
+
+    return jac
 
 
 #Section 2.3: Data Visualization
