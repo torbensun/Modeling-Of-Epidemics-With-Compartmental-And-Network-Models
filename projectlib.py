@@ -417,6 +417,7 @@ def periodic_heaviside(t, t0):
 #Section 2.4: Comparing Data
 
 
+
 def squared_variance(numerical_data, external_data):
     """Simple function to calculate the variance, or deviation, of two datasets
 
