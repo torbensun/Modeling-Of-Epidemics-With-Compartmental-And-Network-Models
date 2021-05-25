@@ -200,12 +200,12 @@ def import_rki_data(region_ids, n):
                 current_time += 1  
         for k in range(rki2len):
             if lk2[k] == region_ids[intern_region_number]: #follow documentation on https://www.arcgis.com/home/item.html?id=f10774f1c63e40168479a1feb6c7ca74
-                #if(newcase2check[k]==1 or newcase2check[k]==0):
-                    #region_cases[intern_region_number][0][date2[k]]+=newcase2[k]
+                if(newcase2check[k]==1 or newcase2check[k]==0):
+                    region_cases[intern_region_number][0][int(date2_day[k])]+=newcase2[k]
                 if(newdead2check[k] == 1 or newdead2check[k] == 0):
                     region_cases[intern_region_number][3][int(date2_day[k])] += newdead2[k]
-                if((newrec2check[k] == 1 or newrec2check[k] == 0) and (date2_day[k] + 14 < date2_day[-1] +1 )):
-                    region_cases[intern_region_number][5][int(date2_day[k])+14] += newrec2[k]
+                if((newrec2check[k] == 1 or newrec2check[k] == 0)):
+                    region_cases[intern_region_number][5][int(date2_day[k])] += newrec2[k]
         for j in range(lk_num):
             if lk_popcalc[j] == region_ids[intern_region_number]:
                 region_popsize[intern_region_number] = lk_popsize[j]
