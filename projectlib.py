@@ -414,6 +414,7 @@ def jacobi(data, comp, model, t0):
 
     # initializing zero blocks of jacobian
 
+    """
     zeroBlock = np.array([np.zeros(data.dimension) for i in range(data.dimension)])
     SS = np.array([np.zeros(data.dimension) for i in range(data.dimension)])
     SI = SS
@@ -462,7 +463,7 @@ def jacobi(data, comp, model, t0):
     
     jac = np.bmat([[SS, SI, SR, SD], [IS, II, IR, ID], [RS, RI, RR, RD], [DS, DI, DR, DD]])
 
-
+    """
     return jac
 
 
