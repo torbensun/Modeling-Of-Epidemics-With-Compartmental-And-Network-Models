@@ -421,6 +421,17 @@ def jacobi(data, comp, model, t0):
     II = SS
     RI = SS
     DI = SS
+    SR = SS
+    SD = SS
+    IR = SS
+    ID = SS
+    RS = SS
+    RR = SS
+    RD = SS
+    DS = SS
+    DR = SS
+    DD = SS
+
 
 
 
@@ -431,9 +442,12 @@ def jacobi(data, comp, model, t0):
             m = 0
             for k in range(data.dimension):
                 m += data.commutersFrom(i)[k] * effective_infected(data.commutersTo, data.commutersFrom, data.N, k, comp[data.dimension:2 * data.dimension], data.dimension)
-            SS[i, i] = - ((1 - data.commuters_day)*data.alpha*array[data.dimension + i] + \
+            
+            SS[i, i] = - ((1 - data.commuters_day)*data.alpha*comp[data.dimension + i] + \
                     data.commuters_day*data.alpha  / data.N[i] * (effective_population(data.commutersFrom, data.N, i) * \
                     effective_infected(data.commutersTo, data.commutersFrom, data.N, i, comp[data.dimension:2 * data.dimension], data.dimension) + m))
+            
+            IS[i][i] = - SS[i][i]
             for k in range(data.dimension):
                 
         
@@ -445,7 +459,8 @@ def jacobi(data, comp, model, t0):
     elif model == "heaviside":
 
     
-
+    
+    jac = np.bmat([[SS, SI, SR, SD], [IS, II, IR, ID], [RS, RI, RR, RD], [DS, DI, DR, DD]])
 
 
     return jac
