@@ -10,7 +10,7 @@
 // FUNTION INITIALIZATION
 
 
-int function_of_system(double t, double y[], double f[], double *params);
+int function_of_system(double t, double y[], double f[], double **commuters, double *population);
 
 void read_commuters(double **commu, int N);
 
@@ -94,16 +94,52 @@ void read_commuters(double **commu, int N){
     return;
 }
 
+// ###########################################################################################
 
-int function_of_system(double t, double y[], double f[], double *params){
+
+
+int function_of_system(double t, double y[], double f[], double **commuters, double *population){
+    // arrays for different quantities
+    // effective infected
+    double *Ieff = (double*)malloc(sizeof(double) * dimension);
+    // S
+    double *So = (double*)malloc(sizeof(double) * dimension);
+    // I
+    double *Io = (double*)malloc(sizeof(double) * dimension);
+    // R
+    double *Ro = (double*)malloc(sizeof(double) * dimension);
+    // D
+    double *Do = (double*)malloc(sizeof(double) * dimension);
+    // effective population
+    double *Neff = (double*)malloc(sizeof(double) * dimension);
     
+    // filling the arrays
+    for (int i = 0; i < dimension; i++){
+        So[i] = y[i];
+        Io[i] = y[i + dimension];
+        Ro[i] = y[i + 2*dimension];
+        Do[i] = y[i + 3*dimension];
+        Neff[i] = effective_population(commuters, population, dimension)[i];
+    }
+
+    // fill the effective infected
+    for (int i = 0; i < dimension; i++){
+        Ieff[i] = effective_infected(commuters, population, dimension, Io)[i];
+    }
+
+    //TODO finish the function
 
 
-
-
+    // freeing the malloc
+    free(Ieff);
+    free(So);
+    free(Io);
+    free(Ro);
+    free(Do);
+    free(Neff);
     return 0;
 }
  
-
+// TODO: (either here or in lib.c) write a rk4 solver or adjust the one from my_numerics
 
 
