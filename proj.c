@@ -22,6 +22,7 @@ const double alpha = 0.2; // rate of infected
 const double beta = 1.0/14.0; // recovery rate
 const int dimension = 12; // dimension of the system
 const double p = 0.0264; // death rate
+const double t0 = 10.0/24.0; // ratio of commuters not home / hours a day
 // TODO fill this or make code read it.
 const double population[dimension] = {}; // array with population of system
     
@@ -88,16 +89,25 @@ void read_commuters(double **commu, int N){
                 break;
             } 
         }
-
-
     }
+
     return;
 }
 
 // ###########################################################################################
 
 
-
+/**
+ * @brief The function of the system. The system is in this case is modeled by the approach of constant coefficients, i.e. the weighted mean of the standard
+ *        and the dynamic model
+ * 
+ * @param t time at which it is to be calculated
+ * @param y array contaning the system quantities [S,...S, I,...I, R,...R, D,...D]
+ * @param f array which is to be filled with derivatives
+ * @param commuters matrix with commuters
+ * @param population array with population
+ * @return int 
+ */
 int function_of_system(double t, double y[], double f[], double **commuters, double *population){
     // arrays for different quantities
     // effective infected
@@ -128,6 +138,25 @@ int function_of_system(double t, double y[], double f[], double **commuters, dou
     }
 
     //TODO finish the function
+    for (int i = 0; i < dimension; i++){
+        // sum for last term in derivative. For detail see PDF/LaTeX
+        double sum = 0;
+        for (int k = 0; k < dimension; k++){
+            sum += commutersFrom(commuters, dimension, i)[k] * Ieff[k];
+        }
+
+        // dSdt
+        f[i] = - (1 - t0) * alpha * So[i] * Io[i] - t0/population[i] * So[i] * (Neff[i] * Ieff[i] - sum);
+
+        // dIdt
+        f[i + dimension] = - f[i] - beta*Io[i];
+
+        // dRdt
+        f[i + 2 * dimension] = beta * (1 - p) * Io[i];
+
+        // dDdt
+        f[i + 3 * dimension] = beta * p * Io[i];
+    }
 
 
     // freeing the malloc

@@ -11,6 +11,7 @@
  * @return double*  Array with the commuters from cell l
  */
 double *commutersFrom(double **commuters, int dimension, int l){
+    
     // array to be returned
     double a[dimension];
 
@@ -35,6 +36,7 @@ double *commutersFrom(double **commuters, int dimension, int l){
  * @return double*  Array with the commuters going to cell l
  */
 double *commutersTo(double **commuters, int dimension, int l){
+
      // array to be returned
     double a[dimension];
 
@@ -58,13 +60,16 @@ double *commutersTo(double **commuters, int dimension, int l){
  */
 
 double *effective_population(double **commuters, double *population, int dimension){
+
     // initialize return array
     double array[dimension];
     
     // iterating over every cell and calculating effective population for every cell
     for (int i = 0; i < dimension; i++){
+
         // setting the value of return array to the population of the respective cell
         array[i] = population[i];
+
         // iterating over commuters and subtracting them from the population
         for (int k = 0; k < dimension; k++){
             array[i] -= commuters[k][i];
@@ -86,14 +91,18 @@ double *effective_population(double **commuters, double *population, int dimensi
  * @param infected    Array with the infected
  * @return double*    Array with effective infected
  */
+
 double *effective_infected(double **commuters, double *population, int dimension, double *infected){
+
     // initialize return array
     double Ieff[dimension];
 
     // iterating over every cell to fill return array and calculating the effective infected
     for (int i = 0; i < dimension; i++){
+
         // setting array values
         Ieff[i] = infected[i];
+
         // setting two help variables 
         double cfrom = 0;
         double cto = 0;
@@ -103,6 +112,7 @@ double *effective_infected(double **commuters, double *population, int dimension
             cfrom -= commuters[k][i];
             cto += commuters[i][k]*infected[k];
         }
+
         // calculating the effective infected
         Ieff[i] += 1.0/population[i]*(cfrom*infected[i] + cto);
     }
@@ -110,5 +120,8 @@ double *effective_infected(double **commuters, double *population, int dimension
     return Ieff;
     
 }
+
+
+
 
 
