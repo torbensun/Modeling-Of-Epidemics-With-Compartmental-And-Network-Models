@@ -254,6 +254,17 @@ def initial_compartment_distribution(mode, date):
     else:
         print("mode error: invalid argument")
 
+def save_initial_compartment_distribution(mode, date):
+    #name = date+".txt"
+    file = open("initial_data.txt","w")
+    np.savetxt(file, initial_compartment_distribution(mode, date))
+    file.close()
+
+def save_popdata():
+    file = open("popdata38.txt", "w")
+    np.savetxt(file, import_rki_data(region_setup(38)[0], 7)[2])
+    file.close()
+
 #Section 2.2: Data Manipulation
 
 def cumulate_data(case_array):
