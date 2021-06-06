@@ -14,6 +14,8 @@ int function_of_system(double t, double y[], double f[], double **commuters, dou
 
 void read_commuters(double **commu, int N);
 
+void fill_pop_array();
+
 
 
 // initializing parameters. For more explanation of these see the Latex/PDF 
@@ -22,11 +24,6 @@ const double alpha = 0.2; // rate of infected
 const double beta = 1.0/14.0; // recovery rate
 const int dimension = 12; // dimension of the system
 const double p = 0.0264; // death rate
-const double t0 = 10.0/24.0; // ratio of commuters not home / hours a day
-// TODO fill this or make code read it.
-const double population[dimension] = {}; // array with population of system
-    
-
 
 
 
@@ -45,6 +42,13 @@ int main(){
     }
 
 
+    // filling the population vector
+    double population[dimension]; // array with population of system
+    fill_pop_array(population);
+
+    for (int j = 0; j < dimension; ++j)
+        printf("%f\n",population[j]);
+
     // filling the commuter matrix
     read_commuters(commu, N);
 
@@ -59,6 +63,7 @@ int main(){
     }
     free(commu);
     return 0;
+
 }
 
 
@@ -168,7 +173,17 @@ int function_of_system(double t, double y[], double f[], double **commuters, dou
     free(Neff);
     return 0;
 }
- 
+
+// ###########################################################################################
+
+void fill_pop_array(double* population)
+{
+    FILE* popdata = fopen("Internal Data/popdata38.txt", "r");
+    for (int j = 0; j < dimension; ++j)
+        fscanf(popdata, "%lf", &population[j]);
+    fclose(popdata);
+}
+
 // TODO: (either here or in lib.c) write a rk4 solver or adjust the one from my_numerics
 
 
