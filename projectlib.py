@@ -153,7 +153,7 @@ def import_rki_data(region_ids, n):
     time = len([a for a in lk if a == 0])
 
     #similar process for RKI_COVID19 (contains information on new deaths and recovered)
-    #all variables that were initially dependend on this database carry number 2 in the name
+    #all variables that were initially dependent on this database carry number 2 in the name
 
     rki2 = pd.read_csv('External Data/RKI_COVID19_cut_Region38.csv', sep = ',', header = 'infer')
     rki2 = rki2.sort_values(by = 'Meldedatum')
@@ -190,16 +190,18 @@ def import_rki_data(region_ids, n):
     region_popsize = np.zeros((region_num))
     region_compartment_distribution = np.zeros((region_num,4, required_duration))
 
-
+    testcount=0
     for intern_region_number in range(region_num): #for rki and rki2, two different processes
         current_time = 0
+        
         for i in range(lk_comp_num):
             if lk[i] == region_ids[intern_region_number] and current_time < time:
                 region_cases[intern_region_number][0][current_time] = case[i] + case_add[i]
-                region_cases[intern_region_number][1][current_time] = case_cum[i]
+                #region_cases[intern_region_number][1][current_time] = case_cum[i]
                 current_time += 1  
         for k in range(rki2len):
             if lk2[k] == region_ids[intern_region_number]: #follow documentation on https://www.arcgis.com/home/item.html?id=f10774f1c63e40168479a1feb6c7ca74
+                testcount+=1
                 #if(newcase2check[k]==1 or newcase2check[k]==0):
                     #region_cases[intern_region_number][0][date2[k]]+=newcase2[k]
                 if(newdead2check[k] == 1 or newdead2check[k] == 0):
@@ -219,6 +221,7 @@ def import_rki_data(region_ids, n):
         region_compartment_distribution[intern_region_number][1] = region_cases[intern_region_number][8] / region_popsize[intern_region_number]
         region_compartment_distribution[intern_region_number][2] = region_cases[intern_region_number][6] / region_popsize[intern_region_number]
         region_compartment_distribution[intern_region_number][3] = region_cases[intern_region_number][4] / region_popsize[intern_region_number]
+    print(testcount)
     return region_cases, region_compartment_distribution, region_popsize
 
 
