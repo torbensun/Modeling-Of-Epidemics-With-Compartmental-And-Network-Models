@@ -24,7 +24,8 @@ const double alpha = 0.2; // rate of infected
 const double beta = 1.0/14.0; // recovery rate
 const int dimension = 12; // dimension of the system
 const double p = 0.0264; // death rate
-
+// TODO find a source or a better estimate for the value (in case it isn't good enough already)
+const double t0 = 10.0/24.0; // ratio of "commuters not home" (in hours) to hours a day.
 
 
 // ####################################################################
@@ -53,8 +54,50 @@ int main(){
     read_commuters(commu, N);
 
 
-    //void *params = commu;
+    // solving the differential equation using rk4
+    // the time period is from July 24. to November 1. 
 
+    // time of starting. Note that the unit is days
+    double t_start = 0.0;
+    // The simmulation spans 100 days
+    double t_end = 100.0;
+
+    // choosing a delta_t
+    // TODO maybe adjust this for better resolution/results
+    double delta_t = 0.001; // this time step corresponds to about 1.4 minutes (someone please check the math on this)
+
+    // dimension of differential equation (as there are 4 differential equations per cell)
+    int dim_deq = 4 * dimension;
+
+    // array with initial conditions
+    // TODO import initial conditions of the system
+    double y[dim_deq];
+
+
+    // file for saving the solution of calculations
+    FILE *sol = fopen("DiffEq.txt", "w");
+
+    // loop to solve the differential equation
+    while (t_start < t_end){
+        // applying the rk4 step function to calculate the next step in y
+        rk4_step(t_start, delta_t, y, function_of_system, dim_deq, commu, population);
+
+        // adding time to the file
+        fprintf(sol, "&lf,", t_start);
+
+        // adding all the y values to file
+        for (int i = 0; i < dim_deq; i++){
+            fprintf(sol, "%lf,", y[i]);
+        }
+
+        // new line in file
+        fprintf(sol, "\n");
+
+
+        // increasing time by delta_t
+        t_start += delta_t;
+
+    }
 
 
     // free the mallocs
@@ -62,6 +105,10 @@ int main(){
         free(commu[i]);
     }
     free(commu);
+
+    // closing file
+    fclose(sol);
+
     return 0;
 
 }
@@ -72,6 +119,7 @@ int main(){
 // ####################################################################
 
 
+// ################################### COMMUTERS ###################################
 
 /**
  * @brief function to read the txt file with the commuters
@@ -96,10 +144,11 @@ void read_commuters(double **commu, int N){
         }
     }
 
+    fclose(com);
     return;
 }
 
-// ###########################################################################################
+// ##################################### FUNCTION OF SYSTEM ######################################################
 
 
 /**
@@ -174,8 +223,12 @@ int function_of_system(double t, double y[], double f[], double **commuters, dou
     return 0;
 }
 
-// ###########################################################################################
-
+// ######################################### POPULATION ###################################################
+/**
+ * @brief Function to read in the population from txt file and save in the array "population"
+ * 
+ * @param population Array to save the population in
+ */
 void fill_pop_array(double* population)
 {
     FILE* popdata = fopen("Internal Data/popdata38.txt", "r");
@@ -183,7 +236,4 @@ void fill_pop_array(double* population)
         fscanf(popdata, "%lf", &population[j]);
     fclose(popdata);
 }
-
-// TODO: (either here or in lib.c) write a rk4 solver or adjust the one from my_numerics
-
 
