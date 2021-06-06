@@ -155,7 +155,7 @@ def import_rki_data(region_ids, n):
     #similar process for RKI_COVID19 (contains information on new deaths and recovered)
     #all variables that were initially dependend on this database carry number 2 in the name
 
-    rki2 = pd.read_csv('External Data/RKI_COVID19_cut_Region12.csv', sep = ',', header = 'infer')
+    rki2 = pd.read_csv('External Data/RKI_COVID19_cut_Region38.csv', sep = ',', header = 'infer')
     rki2 = rki2.sort_values(by = 'Meldedatum')
     rki2 = rki2[(rki2['Meldedatum'] >= '2020/03/01')]
     lk2 = np.array(rki2['IdLandkreis'])
