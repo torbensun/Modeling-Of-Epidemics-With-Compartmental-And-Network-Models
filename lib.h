@@ -13,7 +13,7 @@ double *effective_infected(double **commuters, double *population, int dimension
 
 // typedef for function to be integrated
 typedef
-int ode_func(double, const double[], double[], void*);
+int ode_func(double, double[], double[], double**, double*);
 // Runge Kutta 4 for this system
 void rk4_step(double t, double delta_t, double y[], ode_func func, int dim, double **commuters, double *population);
 

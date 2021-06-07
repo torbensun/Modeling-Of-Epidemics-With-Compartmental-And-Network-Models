@@ -84,7 +84,7 @@ int main(){
         rk4_step(t_start, delta_t, y, function_of_system, dim_deq, commu, population);
 
         // adding time to the file
-        fprintf(sol, "&lf,", t_start);
+        fprintf(sol, "%lf,", t_start);
 
         // adding all the y values to file
         for (int i = 0; i < dim_deq; i++){
