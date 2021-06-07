@@ -16,6 +16,8 @@ void read_commuters(double **commu, int N);
 
 void fill_pop_array();
 
+void fill_y_array(double* y);
+
 
 
 // initializing parameters. For more explanation of these see the Latex/PDF 
@@ -44,8 +46,8 @@ int main(){
 
 
     // filling the population vector
-    double population[dimension] = {2.758170000000000000e+05, 7.045800000000000000e+04, 1.362920000000000000e+05, 1.402510000000000000e+05, 1.322850000000000000e+05, 3.260410000000000000e+05, 2.133100000000000000e+05, 2.367640000000000000e+05, 2.021370000000000000e+05, 1.006290000000000000e+05, 1.000060000000000000e+05, 8.341600000000000000e+04};// array with population of system
-    //fill_pop_array(population);
+    double *population = malloc(sizeof(double) * dimension); // array with population of system
+    fill_pop_array(population);
 
     
 
@@ -69,8 +71,8 @@ int main(){
     int dim_deq = 4 * dimension;
 
     // array with initial conditions
-    // TODO import initial conditions of the system
-    double y[dim_deq] = {9.984119905589575739e-01, 6.526066196064781778e-05, 1.490118448101458628e-03, 3.263033098032390889e-05, 9.984955576371739028e-01, 0.000000000000000000e+00, 1.405092395469641556e-03, 9.934996735643929645e-05, 9.980703196079007133e-01, 2.201156340797699005e-05, 1.702227570216887330e-03, 2.054412584744519116e-04, 9.973119621250472466e-01, 3.565036969433373228e-05, 2.516916100419961527e-03, 1.354714048384681867e-04, 9.988585251540235133e-01, 1.511887213213894254e-05, 1.088558793514003958e-03, 3.779718033034735889e-05, 9.960127713999159527e-01, 3.373808815455725004e-05, 3.711189697001297545e-03, 2.423008149281838885e-04, 9.987764286718859852e-01, 0.000000000000000000e+00, 1.200131264357038978e-03, 2.344006375697341754e-05, 9.981922927472082208e-01, 6.757784122586203419e-05, 1.609197344190839820e-03, 1.309320673751076896e-04, 9.980211440755527574e-01, 6.431281754453662964e-05, 1.870018848602680297e-03, 4.452425830006381531e-05, 9.976746265986942142e-01, 9.937493167973447138e-06, 2.156436017450238159e-03, 1.589998906875751542e-04, 9.983900965942043015e-01, -9.999400035997840970e-06, 1.499910005399676064e-03, 1.199928004319740781e-04, 9.991848086697995290e-01, 2.397621559413062403e-05, 7.672388990121799691e-04, 2.397621559413062403e-05, 9.975464841437541308e-01, 4.407513514214230984e-05, 2.300549210752604427e-03, 1.088915103511751232e-04};
+    double y[dim_deq];
+    fill_y_array(y);
 
 
     // file for saving the solution of calculations
@@ -104,6 +106,8 @@ int main(){
         free(commu[i]);
     }
     free(commu);
+    
+    free(population);
 
     // closing file
     fclose(sol);
@@ -234,5 +238,29 @@ void fill_pop_array(double* population)
     for (int j = 0; j < dimension; ++j)
         fscanf(popdata, "%lf", &population[j]);
     fclose(popdata);
+}
+
+// ######################################### INITIAL CONDITIONS ###################################################
+/**
+ * @brief Function to read in the initial condition (SIRD distribution) from txt file and save in the array "y"
+ * 
+ * @param y Array to save the initial conditions in
+ */
+void fill_y_array(double* y)
+{
+    double *initial_unsorted = malloc(4 * dimension * sizeof(double));
+    FILE* initial = fopen("Internal Data/initial_data.txt", "r");
+    for (int j = 0; j < 4 * dimension; ++j)
+        fscanf(initial, "%lf", &initial_unsorted[j]);
+    fclose(initial);
+    for (int k = 0; k < dimension; ++k)
+    {
+        for (int l = 0; l < 4; ++l)
+        {
+            y[dimension * l + k] = initial_unsorted[4 * k + l];
+        }
+    }
+    free(initial_unsorted);
+        
 }
 
