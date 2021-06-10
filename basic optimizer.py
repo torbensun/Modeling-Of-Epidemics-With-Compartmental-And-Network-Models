@@ -17,8 +17,23 @@ def Bew(params, component, which_one):
         return f(z)
 
 
+def I_neu(d, params):
+    state=summon_results(params)
+    S = state[0:n - 1]
+    I = state[n:2 * n - 1]
+    R = state[2 * n:3 * n - 1]
+    D = R * np.array(p)
+    sum=0
+    for i in range(d):
+        sum=sum+I[i]+R[i]+D[i]-I[i-1]
+
+
 def f(params):
-    return -np.exp(-np.power(params[0],2))+params[1]**2
+    number_of_days = 100
+    sum=0
+    for d in range(number_of_days):
+        sum = sum + I_neu(d, params)**2
+    return sum
 
 
 def imporve(params, component,which_one, sign, eval):
