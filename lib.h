@@ -18,5 +18,20 @@ int ode_func(double, const double[], double[], void*);
 void rk4_step(double t, double delta_t, double y[], ode_func func, int dim, double **commuters, double *population);
 
 
+//----------------------- LINEAR ALGEBRA --------------------------/*
+
+/* Gauss elimination algorithm that transforms a nxm matrix into a triangular matrix */
+int gauss(int n, int m, double A[n*m], int pivoting);
+/* Returns the determinant of a nxn matrix A */
+double det(int n, double A[n*n], int pivoting);
+/* Calculates the solution x of linear equation Ax=b */
+void lgs_solve(int n, double A[n*n],double b[n], double x[n], int pivoting);
+/* Calculates the inverse of nxn matrix A */
+void inverse(int n, double A[n*n], double A_inverse[n*n]);
+/* Calculates the matrix product of nxm matrix A and mxp matrix B */
+void matrix_product(int n, int m, int p, double A[n*m], double B[m*p], double AB[n*p]);
+/* Calculates the transpose of nxm matrix A */
+void transpose(int n, int m, double A[n*m], double A_transpose[m*n]);
+
 
 #endif

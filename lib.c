@@ -205,5 +205,203 @@ void rk4_step(double t, double delta_t, double y[], ode_func func, int dim, doub
 
 }
 
+/* ##################################### LINEAR ALGEBRA ####################################### */
 
+/**
+ * @brief Gauss elimination algorithm that transforms a nxm matrix A into a triangular matrix
+ * 
+ * @param n number of rows in matrix A
+ * @param m number of columns in matrix A
+ * @param A 1D array containing the matrix whose (i,j)-element has been mapped to index (i*m +j)
+ * @param pivoting if 1: algorithm chooses highest pivot element in each step
+ * 
+ * @return int	sign of determinant of resulting matrix (always 1 when pivoting is not activated)
+ */
+int gauss(int n, int m, double A[n*m], int pivoting)
+{
+	int sign = 1;
+	
+	for (int i = 0; i < n-1; i++)
+	{	
+		if(pivoting == 1)
+		{
+			for(int k = i+1; k < n ; k++)
+			{
+				if(fabs(A[i*m + i]) < fabs(A[k*m + i]))
+				{
+					for(int j = 0; j < m; j++)
+					{
+						double temp = A[i*m + j];
+						A[i*m + j] = A[k*m + j];
+						A[k*m + j] = temp;
+					}
+					
+					sign = (-1)*sign;
+				}
+			}
+		}
+		
+		for (int k = i+1; k < n; k++)
+		{
+			double c = A[k*m + i] / A[i*m + i];
+			for (int j = 0; j < m; j++)
+			{
+				A[k*m + j] = A[k*m + j] - c * A[i*m + j];
+			}
+		}
+	}
+	
+	return sign;
+}
 
+/**
+ * @brief Returns the determinant of a nxn matrix A
+ * 
+ * @param n number of rows/columns in square matrix A
+ * @param A 1D array containing the matrix whose (i,j)-element has been mapped to index (i*n +j)
+ * @param pivoting if 1: algorithm chooses biggest pivot element pivot element in each step of Gaussian elimination
+ * 
+ * @return double	determinant of A
+ */
+double det(int n, double A[n*n], int pivoting)
+{
+	double B[n*n];
+	for(int i = 0; i < n; i++)
+	{
+		for(int j = 0; j < n; j++)
+		{
+			B[i*n + j] = A[i*n + j];
+		}
+	}
+	
+	int sign = gauss(n, n, B, pivoting);
+	
+	double product = 1.0;
+	for (int i = 0; i < n; i++)
+	{
+		product = product * B[i*n + i];
+	}
+	
+	return sign * product;	
+}
+
+/**
+ * @brief Calculates the solution x of linear equation Ax=b
+ * 
+ * @param n number of rows/columns in square matrix A
+ * @param A 1D array containing the matrix whose (i,j)-element has been mapped to index (i*n +j)
+ * @param b 1D array containing the components of vector b
+ * @param x 1D array that specifies the destination of solution vector x
+ * @param pivoting if 1: algorithm chooses biggest pivot element in each step of Gaussian elimination
+ * 
+ */
+void lgs_solve(int n, double A[n*n], double b[n], double x[n], int pivoting)
+{
+	double C[n*(n + 1)];
+	for(int i = 0; i < n; i++)
+	{
+		for(int j = 0;  j < n; j++)
+		{
+			C[i*(n+1) + j] = A[i*n + j];
+		}
+		C[i*(n+1) + n] = b[i];
+	}
+	
+	gauss(n, n+1, C, pivoting);
+	
+	for(int i = n-1; i >= 0; i--)
+	{
+		double sum = 0;
+		for(int j = i+1; j < n; j++)
+		{
+			sum += C[i*(n+1) + j] * x[j];
+		}
+		x[i] = (C[i*(n+1) + n] - sum) / C[i*(n+1) + i];
+	}
+}
+
+/**
+ * @brief Calculates the inverse of nxn matrix A
+ * 
+ * @param n number of rows/columns in square matrix A
+ * @param A 1D array containing the matrix whose (i,j)-element has been mapped to index (i*n +j)
+ * @param A_inverse 1D array that specifies the destination of inverse whose (i,j)-element is mapped to index (i*n +j)
+ * 
+ */
+void inverse(int n, double A[n*n], double A_inverse[n*n])
+{
+	if (det(n, A, 1) == 0)
+	{
+		printf("How dare you trying to invert a matrix with vanishing determinant!");
+	}
+	else
+	{
+		for(int j = 0; j < n; j++)
+		{
+			double b[n];
+			double x[n];
+			
+			for(int i = 0; i < n; i++)
+			{
+				b[i] = 0;
+			}
+			b[j] = 1;
+			
+			lgs_solve(n, A, b, x, 1);
+			
+			for(int i = 0; i < n; i++)
+			{
+				A_inverse[i*n + j] = x[i];
+			}
+			
+		}
+	}
+}
+
+/**
+ * @brief Calculates the matrix product of nxm matrix A and mxp matrix B
+ * 
+ * @param n number of rows in matrix A
+ * @param m number of columns in matrix A / rows in matrix B
+ * @param p number of columns in matrix B
+ * @param A 1D array containing the matrix A whose (i,j)-element has been mapped to index (i*m +j)
+ * @param B 1D array containing the matrix B whose (i,j)-element has been mapped to index (i*p +j)
+ * @param AB 1D array that specifies the destination of matrix product whose (i,j)-element is mapped to index (i*p +j)
+ * 
+ */
+void matrix_product(int n, int m, int p, double A[n*m], double B[m*p], double AB[n*p])
+{
+	for(int i = 0; i < n; i++)
+	{
+		for(int j = 0; j < p; j++)
+		{
+			AB[i*p + j] = 0;
+			
+			for(int k = 0; k < m; k++)
+			{
+				AB[i*p + j] += A[i*m + k] * B[k*p + j];
+			}
+		}
+	}
+	
+}
+
+/**
+ * @brief Calculates the transpose of nxm matrix A
+ * 
+ * @param n number of rows in matrix A
+ * @param m number of columns in matrix A
+ * @param A 1D array containing the matrix A whose (i,j)-element has been mapped to index (i*m +j)
+ * @param A_transpose 1D array that specifies the destination of transpose whose (i,j)-element is mapped to index (i*n +j)
+ * 
+ */
+void transpose(int n, int m, double A[n*m], double A_transpose[m*n])
+{
+	for(int i = 0; i < m; i++)
+	{
+		for(int j = 0; j < n; j++)
+		{
+			A_transpose[i*n +j] = A[j*m +i];
+		}
+	}
+}
