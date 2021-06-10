@@ -9,19 +9,16 @@
  * @param commuters The matrix with all the commuters
  * @param dimension Integer telling how big the system is
  * @param l         Integer saying from what cell the commuters come from
- * @return double*  Array with the commuters from cell l
+ * @param a         Matrix to be written in
  */
-double *commutersFrom(double **commuters, int dimension, int l){
+void commutersFrom(double **commuters, int dimension, int l, double *a){
     
-    // array to be returned
-    double a[dimension];
 
     // fill
     for (int i = 0; i < dimension; i++){
         a[i] = commuters[i][l];
     }
 
-    return a;
 }
 
 
@@ -35,18 +32,14 @@ double *commutersFrom(double **commuters, int dimension, int l){
  * @param dimension Integer telling how big the system is
  * @param l         Integer saying to what cell the commuters are going
  * @return double*  Array with the commuters going to cell l
+ * @param a         Matrix to be written in
  */
-double *commutersTo(double **commuters, int dimension, int l){
-
-     // array to be returned
-    double a[dimension];
+void commutersTo(double **commuters, int dimension, int l, double *a){
 
     // fill
     for (int i = 0; i < dimension; i++){
         a[i] = commuters[l][i];
     }
-
-    return a;
 
 }
 
@@ -58,13 +51,11 @@ double *commutersTo(double **commuters, int dimension, int l){
  * @param commuters Matrix (38 * 38) filled with commuters
  * @param population Array with population
  * @return double*  Array with effective population
+ * @param array         Matrix to be written in
  */
 
-double *effective_population(double **commuters, double *population, int dimension){
+void effective_population(double **commuters, double *population, int dimension, double *array){
 
-    // initialize return array
-    double array[dimension];
-    
     // iterating over every cell and calculating effective population for every cell
     for (int i = 0; i < dimension; i++){
 
@@ -77,9 +68,6 @@ double *effective_population(double **commuters, double *population, int dimensi
         }
 
     }
-
-    // returning array
-    return array;
 }
 
 // ############################### EFFECTIVE INFECTED #############################
@@ -93,12 +81,10 @@ double *effective_population(double **commuters, double *population, int dimensi
  * @param dimension   Dimension of the system
  * @param infected    Array with the infected
  * @return double*    Array with effective infected
+ * @param Ieff         Matrix to be written in
  */
 
-double *effective_infected(double **commuters, double *population, int dimension, double *infected){
-
-    // initialize return array
-    double Ieff[dimension];
+void effective_infected(double **commuters, double *population, int dimension, double *infected, double* Ieff){
 
     // iterating over every cell to fill return array and calculating the effective infected
     for (int i = 0; i < dimension; i++){
@@ -119,8 +105,6 @@ double *effective_infected(double **commuters, double *population, int dimension
         // calculating the effective infected
         Ieff[i] += 1.0/population[i]*(cfrom*infected[i] + cto);
     }
-
-    return Ieff;
     
 }
 

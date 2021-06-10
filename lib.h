@@ -3,13 +3,13 @@
 
 
 // Function that returns array filled with commuters from a cell
-double *commutersFrom(double **commuters, int dimension, int l);
+void commutersFrom(double **commuters, int dimension, int l, double *a);
 // Function that returns array filled with commuters to a cell
-double *commutersTo(double **commuters, int dimension, int l);
+void commutersTo(double **commuters, int dimension, int l, double *a);
 // Funtion to calculate the effective population in every cell
-double *effective_population(double **commuters, double *population, int dimension);
+void effective_population(double **commuters, double *population, int dimension, double *array);
 // Function to calculate the effective infected in every cell
-double *effective_infected(double **commuters, double *population, int dimension, double *infected);
+void effective_infected(double **commuters, double *population, int dimension, double *infected, double *Ieff);
 
 // typedef for function to be integrated
 typedef

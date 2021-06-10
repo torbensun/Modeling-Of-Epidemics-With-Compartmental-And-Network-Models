@@ -24,7 +24,7 @@ void fill_y_array(double* y);
 
 const double alpha = 0.2; // rate of infected
 const double beta = 1.0/14.0; // recovery rate
-const int dimension = 12; // dimension of the system
+const int dimension = 38; // dimension of the system
 const double p = 0.0264; // death rate
 // TODO find a source or a better estimate for the value (in case it isn't good enough already)
 const double t0 = 10.0/24.0; // ratio of "commuters not home" (in hours) to hours a day.
@@ -36,7 +36,7 @@ const double t0 = 10.0/24.0; // ratio of "commuters not home" (in hours) to hour
 
 int main(){
     // size of matrix
-    int N = 38;
+    int N = dimension; // otherwise incompatible
     // creating matrix for commuters. Double pointer 
     double **commu = (double**)malloc(sizeof(double) * N);
     // set the double pointer on mallocs
@@ -84,11 +84,11 @@ int main(){
         rk4_step(t_start, delta_t, y, function_of_system, dim_deq, commu, population);
 
         // adding time to the file
-        fprintf(sol, "%lf,", t_start);
+        fprintf(sol, "%lf ", t_start);
 
         // adding all the y values to file
         for (int i = 0; i < dim_deq; i++){
-            fprintf(sol, "%lf,", y[i]);
+            fprintf(sol, "%lf ", y[i]);
         }
 
         // new line in file
@@ -179,6 +179,10 @@ int function_of_system(double t, double y[], double f[], double **commuters, dou
     double *Do = (double*)malloc(sizeof(double) * dimension);
     // effective population
     double *Neff = (double*)malloc(sizeof(double) * dimension);
+    // commuters from
+    double *CF = (double*)malloc(sizeof(double) * dimension);
+    // commuters to
+    double *CT = (double*)malloc(sizeof(double) * dimension);
     
     // filling the arrays
     for (int i = 0; i < dimension; i++){
@@ -186,20 +190,23 @@ int function_of_system(double t, double y[], double f[], double **commuters, dou
         Io[i] = y[i + dimension];
         Ro[i] = y[i + 2*dimension];
         Do[i] = y[i + 3*dimension];
-        Neff[i] = effective_population(commuters, population, dimension)[i];
     }
+    effective_population(commuters, population, dimension, Neff);
 
     // fill the effective infected
-    for (int i = 0; i < dimension; i++){
-        Ieff[i] = effective_infected(commuters, population, dimension, Io)[i];
-    }
+    effective_infected(commuters, population, dimension, Io, Ieff);
+
+    // fill commuters
+   
 
     //TODO finish the function
     for (int i = 0; i < dimension; i++){
+        commutersFrom(commuters, dimension, i, CF);
+        commutersTo(commuters, dimension, i, CT);
         // sum for last term in derivative. For detail see PDF/LaTeX
         double sum = 0;
         for (int k = 0; k < dimension; k++){
-            sum += commutersFrom(commuters, dimension, i)[k] * Ieff[k];
+            sum += CF[k] * Ieff[k];
         }
 
         // dSdt
@@ -223,6 +230,8 @@ int function_of_system(double t, double y[], double f[], double **commuters, dou
     free(Ro);
     free(Do);
     free(Neff);
+    free(CF);
+    free(CT);
     return 0;
 }
 
