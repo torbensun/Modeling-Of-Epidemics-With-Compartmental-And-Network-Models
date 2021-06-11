@@ -210,7 +210,7 @@ int function_of_system(double t, double y[], double f[], double **commuters, dou
         }
 
         // dSdt
-        f[i] = - (1 - t0) * alpha * So[i] * Io[i] - t0/population[i] * So[i] * (Neff[i] * Ieff[i] - sum);
+        f[i] = - (1 - t0) * alpha * So[i] * Io[i] - t0/population[i] * So[i] * (Neff[i] * Ieff[i] + sum);
 
         // dIdt
         f[i + dimension] = - f[i] - beta*Io[i];
