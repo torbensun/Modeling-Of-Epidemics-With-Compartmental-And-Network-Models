@@ -221,7 +221,6 @@ def import_rki_data(region_ids, n):
         region_compartment_distribution[intern_region_number][1] = region_cases[intern_region_number][8] / region_popsize[intern_region_number]
         region_compartment_distribution[intern_region_number][2] = region_cases[intern_region_number][6] / region_popsize[intern_region_number]
         region_compartment_distribution[intern_region_number][3] = region_cases[intern_region_number][4] / region_popsize[intern_region_number]
-    print(testcount)
     return region_cases, region_compartment_distribution, region_popsize
 
 
