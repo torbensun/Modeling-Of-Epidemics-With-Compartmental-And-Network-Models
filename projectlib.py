@@ -153,9 +153,9 @@ def import_rki_data(region_ids, n):
     time = len([a for a in lk if a == 0])
 
     #similar process for RKI_COVID19 (contains information on new deaths and recovered)
-    #all variables that were initially dependend on this database carry number 2 in the name
+    #all variables that were initially dependent on this database carry number 2 in the name
 
-    rki2 = pd.read_csv('External Data/RKI_COVID19_cut_Region12.csv', sep = ',', header = 'infer')
+    rki2 = pd.read_csv('External Data/RKI_COVID19_cut_Region38.csv', sep = ',', header = 'infer')
     rki2 = rki2.sort_values(by = 'Meldedatum')
     rki2 = rki2[(rki2['Meldedatum'] >= '2020/03/01')]
     lk2 = np.array(rki2['IdLandkreis'])
@@ -190,16 +190,18 @@ def import_rki_data(region_ids, n):
     region_popsize = np.zeros((region_num))
     region_compartment_distribution = np.zeros((region_num,4, required_duration))
 
-
+    testcount=0
     for intern_region_number in range(region_num): #for rki and rki2, two different processes
         current_time = 0
+        
         for i in range(lk_comp_num):
             if lk[i] == region_ids[intern_region_number] and current_time < time:
                 region_cases[intern_region_number][0][current_time] = case[i] + case_add[i]
-                region_cases[intern_region_number][1][current_time] = case_cum[i]
+                #region_cases[intern_region_number][1][current_time] = case_cum[i]
                 current_time += 1  
         for k in range(rki2len):
             if lk2[k] == region_ids[intern_region_number]: #follow documentation on https://www.arcgis.com/home/item.html?id=f10774f1c63e40168479a1feb6c7ca74
+                testcount+=1
                 #if(newcase2check[k]==1 or newcase2check[k]==0):
                     #region_cases[intern_region_number][0][date2[k]]+=newcase2[k]
                 if(newdead2check[k] == 1 or newdead2check[k] == 0):
@@ -253,6 +255,17 @@ def initial_compartment_distribution(mode, date):
         return np.load('Internal Data/rki_region_compartment_distribution38.npy')[:,:,day]
     else:
         print("mode error: invalid argument")
+
+def save_initial_compartment_distribution(mode, date):
+    #name = date+".txt"
+    file = open("initial_data.txt","w")
+    np.savetxt(file, initial_compartment_distribution(mode, date))
+    file.close()
+
+def save_popdata():
+    file = open("popdata38.txt", "w")
+    np.savetxt(file, import_rki_data(region_setup(38)[0], 7)[2])
+    file.close()
 
 #Section 2.2: Data Manipulation
 
@@ -310,27 +323,68 @@ def n_day_incidence(case_array,pop,n):
     return n*n_day_moving_average(case_array,n)/pop*100000
 
 
-def effective_population(comFrom, N, i):
-    """Function to calculated the effective population in a cell.
+def remaining_population(comFrom, N, i):
+    """Function to calculate the remaining population in a cell during commuting stage = N_i^{rest} in document
 
     Args:
         comFrom (callable(j)): function that returns commuters from cell.
         N (array): array with population of every cell
-        i (integer): the cell of which the effective population is wanted.
+        i (integer): the cell of which the remaining population is wanted.
 
     Returns:
-        float: the effective population in cell i.
+        float: the remaining population in cell i.
     """
     return N[i] - np.sum(comFrom(i))
 
 
 
-def effective_infected(comTo, comFrom, N, i, infected, dimension):
-    """Function to calculate the effective number of infected in a cell.
+def contacts_infected(comTo, comFrom, N, i, infected, dimension):
+    """Function to calculate the relative number of infected of the population from a cell during commuting stage = I_i^{pen} in document
 
     Args:
-        comTo (callable(j)): function that returns array of commuters from cell.
-        comFrom (callable(j)): function that returns array of commuters to a cell.
+        comTo (callable(j)): function that returns array of commuters to cell.
+        comFrom (callable(j)): function that returns array of commuters from a cell.
+        N (array): array with population of every cell
+        i (integer): the cell of which the number of infectious contacts is wanted.
+        infected (array): array with number of infected from every cell
+        dimension (integer): number of cells
+
+    Returns:
+        float: infectious contacts of cell i inhabitants
+    """
+
+    # remaining population in cell i
+    Nrest = remaining_population(comFrom, N, i)
+
+    # array for commuters to cell i
+    cto = comTo(i)
+    
+    #variables for sum of commuters & sum of infectious commuters
+    sto = 0
+    sto_inf = 0
+
+    for j in range(dimension):
+        # adding commuters from all cells to i
+        sto += cto[j]
+
+        # adding infectious commuters from all cells to i
+        sto_inf += cto[j] * infected[j]
+    
+    # absolute number of infectious contacts
+    contacts = Nrest * infected[i] + sto_inf
+    
+    # normalizing
+    Ipen = contacts / (Nrest + sto)
+
+    return Ipen
+
+
+def effective_infected(comTo, comFrom, N, i, infected, dimension):
+    """Function to calculate the effective number of infected in a cell = I_i^{eff} in document
+
+    Args:
+        comTo (callable(j)): function that returns array of commuters to cell.
+        comFrom (callable(j)): function that returns array of commuters from a cell.
         N (array): array with population of every cell
         i (integer): the cell of which the effective population is wanted.
         infected (array): array with number of infected from every cell
@@ -340,30 +394,30 @@ def effective_infected(comTo, comFrom, N, i, infected, dimension):
         float: effective infected in cell i
     """
 
-    # making the value to return
-    Ieff = infected[i]
+     # remaining population in cell i
+    Nrest = remaining_population(comFrom, N, i)
 
-    # array for commuters from and to
+    # array for commuters from cell i
     cfrom = comFrom(i)
-    cto = comTo(i)
-    
-    #variables for sum of commuters to and from
-    sto = 0
-    sfrom = 0
-    for k in range(dimension):
-        # adding commuters from all cells to i
-        sto += cto[k] * infected[k]
-        
-        # subtracting commuters from i to all cells
-        sfrom -= cfrom[k]
-    
-    # adjusting for proportionality and applying the normalizing factor
-    sfrom *= infected[i]
-    
-    # adding the change from commuters
-    Ieff += (sfrom + sto)/N[i]
+
+    # array to be filled with the infectious contacts
+    Ipen = np.zeros(dimension)
+
+    # variable for sum of infected commuters
+    spen_inf = 0
+
+    for j in range(dimension):
+        # infectious contacts of cell j inhabitants
+        Ipen[j] = contacts_infected(comTo, comFrom, N, j, infected, dimension)
+
+        # adding commuters infected in other cells
+        spen_inf += cfrom[j] * Ipen[j]
+
+    #  effective infected in cell i, normalized
+    Ieff = (Nrest * Ipen[i] + spen_inf) / N[i]
 
     return Ieff
+
 
 def periodic_heaviside(t, t0):
     """Function to make a periodic heaviside. The period is 1.
