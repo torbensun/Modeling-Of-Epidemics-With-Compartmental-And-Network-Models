@@ -96,10 +96,12 @@ def region_setup(mode):
     elif(mode == 38):
         region_ids = [lk_hildesheim_id,lk_holzminden_id,lk_goslar_id,lk_höxter_id,lk_northeim_id,lk_göttingen_id,lk_harz_id,lk_kassel_id,sk_kassel_id,lk_werrameißnerkreis_id,lk_eichsfeld_id,lk_nordhausen_id,region_hannover_id,lk_schaumburg_id,lk_hamelnpyrmont_id,lk_lippe_id,sk_bielefeld_id,lk_gütersloh_id,lk_paderborn_id,lk_soest_id,lk_hochsauerlandkreis_id,lk_waldeckfrankenberg_id,lk_schwalmederkreis_id,lk_hersfeldrotenburg_id,lk_wartburgkreis_id,sk_eisenach_id,lk_unstruthainichkreis_id,lk_kyffhäuserkreis_id,lk_mansfeldsüdharz_id,lk_salzlandkreis_id,sk_magdeburg_id,lk_börde_id,lk_helmstedt_id,sk_wolfsburg_id,lk_wolfenbüttel_id,sk_braunschweig_id,sk_salzgitter_id,lk_peine_id]
         region_names = ['Hildesheim','Holzminden','Goslar', 'Höxter','Northeim','Göttingen','Harz','Kassel (LK)','Kassel (SK)', 'Werra-Meißner-Kreis','Eichsfeld','Nordhausen','Hannover','Schaumburg','Hameln-Pyrmont','Lippe','Bielefeld','Gütersloh','Paderborn','Soest','Hochsauerlandkreis','Waldeck-Frankenberg','Schwalm-Eder-Kreis','Hersfeld-Rotenburg','Wartburgkreis','Eisenach','Unstrut-Hainich-Kreis','Kyffhäuserkreis','Mansfeld-Südharz','Salzlandkreis','Magdeburg','Börde','Helmstedt','Wolfsburg','Wolfenbüttel','Braunschweig','Salzgitter','Peine']
+        region_short_names =['HI','HOL', 'GS', 'HX', 'NOM', 'GÖ', 'HZ', 'KS-S', 'KS-L', 'ESW', 'EIC', 'NDH', 'H', 'SHG', 'HM', 'LIP', 'BI', 'GT', 'PB', 'SO', 'HSK', 'KB', 'HR', 'HEF', 'WAK', 'EA', 'UH', 'KYF', 'MSH', 'SLK', 'MD', 'BK', 'HE', 'WOB', 'WF', 'BS', 'SZ', 'PE']
         labels = {}
         short_labels = {}
         for intern_region_number in range(mode):
             labels[intern_region_number] = region_names[intern_region_number]
+            short_labels[intern_region_number] = region_short_names[intern_region_number]
     else:
         print("mode err: invalid")
     return region_ids,labels,short_labels
