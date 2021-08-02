@@ -258,6 +258,21 @@ def initial_compartment_distribution(mode, date):
     else:
         print("mode error: invalid argument")
 
+def save_relevant_timeline():
+    """returns SIRD distribution of Region 38 of each day from Jul 24, 2020 to Nov 1, 2020
+
+    Returns:
+        see above
+    """ 
+
+    day_zero=int((datt(2020,7,24) - datt(2020,3,1)).days)
+    output=np.zeros((38,4,100))
+    for d in range(100):
+        for n in range(38):
+            for m in range(4):
+                output[n][m][d] = np.load('Internal Data/rki_region_compartment_distribution38.npy')[n,m,day_zero+d]
+    np.save('Internal Data/timeline.npy',output)
+
 def save_initial_compartment_distribution(mode, date):
     #name = date+".txt"
     file = open("initial_data.txt","w")
