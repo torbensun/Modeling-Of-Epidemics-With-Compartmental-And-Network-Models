@@ -19,7 +19,7 @@ Prof. Dr. Peter Sollich
 
 
 
-### Required packages:
+## Required packages:
 
 Python:
   - numpy
