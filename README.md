@@ -29,13 +29,13 @@ C:
 The project includes:
 
 Folders:
-  Media - Folder with produced plots, flowcharts, animations etc
+  - Media - Folder with produced plots, flowcharts, animations etc
 
-  External Data - Folder containing external data such as information about the pandemic from RKI and the amount of commuters
+  - External Data - Folder containing external data such as information about the pandemic from RKI and the amount of commuters
 
-  Internal Data - Processed data to make life easier
+  - Internal Data - Processed data to make life easier
 
 Scipts:
-  Python & Jupyter Notebook:
-    projectlib.py - Library containing the main functions of the project
+  - Python & Jupyter Notebook:
+      - projectlib.py - Library containing the main functions of the project
 
