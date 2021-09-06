@@ -4,9 +4,13 @@ This project looks at the impact commuting has had on the Covid-19 pandemic in t
 
 
 Authors:
-Mohamad Al Farhan
-Lars Torbjørn Stutzer
-Torben Sunkel
+
+Mohamad Al Farhan,
+
+Lars Torbjørn Stutzer,
+
+Torben Sunkel,
+
 Gero Weber
 
 Supervisor:
