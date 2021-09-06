@@ -1,1 +1,103 @@
-<mxfile host="app.diagrams.net" modified="2021-09-06T13:21:27.572Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36 Edg/93.0.961.38" etag="YO4FlTj5DLF18CdXB3ie" version="15.0.6" type="github"><diagram id="3AYCVtzGoSpn9Vro6qWg" name="Page-1">3VjbcpswEP0aPzqDwIB5dGynuU4zybSpH2VQQFNArhC+fX1XRphbiOPGZiZ9YaQj7SLt2bNI9IxxtP7G8SJ4YB4Je7rmrXvGpKfrpmXBUwKbDDCQkQE+p14GoQJ4pluiQE2hKfVIUpkoGAsFXVRBl8UxcUUFw5yzVXXaKwurb11gnzSAZxeHTfSFeiJQKLKcYuCaUD9Qrx7qdjYQ4Xyy2kkSYI+tSpAx7RljzpjIWtF6TEIZuzwumd1Vy+h+YZzE4iMGY9NOb2f27XL29OJc/fGT4Oahr7wscZiqDavFik0eARJ7IxlI6LkhThLq9ozLQEQhAAiamQHxGnEsFob224U0ISwigm9gCichFnRZtcOKMH8/b2/6yCh41DWVW4alIqtSSx9qVRcJS7lLlFU5MgccIbvmSGDuE9FwBI3SfgpoF/gjSNAbJDzd3QAwZpzFGBr3OPZ+c0IT0mQH4n6P5yA645KThG7xfDekVUnCIfVjySBwQjgAS8IFhTQfqYGIep40vKzISTkrkliakXUr0e05djr2c7bNqgV7fU3IWegxGvRME07BlWTJGEmivv+8mfSR059gQeIgnTdo4iyNPeIpYlYBFeR5gV05uoK6+ZaiDoS6Jap5Smst2lgVRWxgKiwo1a+B1k5EJbDHRtH8fKWBvfPNLxnDC33fn+36jmPnwGStopz1NuXeI+EUtiMVsAM/Wrvgo7MrAe9luXWWIme1EXlskWs4qq+lpcgBI3hTmraQE5Jz6MxqKYPXNBFMZeAXK33mWXKiX7M4X+mzTypa2zDLqkUXGvo/RWufSrQNRzkBHZ1Mhm0nE/nBQ85XlKR9ltNIZ4pEzdPIe5KMWUxqelxTkclxoHqzXGzQLnQoO5tSp65CeMkVlWs/UpNZ6h86bp1ckiaqK+kfJTkY1i4LTreXBTRo0eTIi37EVHxFTaITc55T09kVATXPLniesDAVcGPT7lgEIRAgn1hs0wRH0ICFbNPYb7DV9UXBbLv7li4K+xTv5KKQf1a6+CfxiSNCKT5v3aNy7JNl62C1+fDx36w5sk5VtqBb/MTKphd/Ao3pXw==</diagram></mxfile>
+<mxfile host="app.diagrams.net" modified="2021-09-06T13:42:58.192Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36 Edg/93.0.961.38" etag="3qc5sEAZvEDUxFboyd1S" version="15.0.6" type="github">
+  <diagram id="3AYCVtzGoSpn9Vro6qWg" name="Page-1">
+    <mxGraphModel dx="1374" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="C57uJY7JvYRW9FqgshIM-1" value="" style="endArrow=classic;html=1;entryX=0.35;entryY=1.051;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" edge="1" target="XHsace0uavuUdTPFix8g-3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="80" y="680" as="sourcePoint" />
+            <mxPoint x="80" y="570" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="C57uJY7JvYRW9FqgshIM-2" value="RKI Corona Landkreise" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;" parent="C57uJY7JvYRW9FqgshIM-1" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint y="79" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="C57uJY7JvYRW9FqgshIM-3" value="&lt;b&gt;Esri/RKI: COVID-19-Datenhub&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="20" y="680" width="460" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="C57uJY7JvYRW9FqgshIM-5" value="" style="endArrow=classic;html=1;entryX=0.21;entryY=0.997;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.657;exitY=0.006;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" target="C57uJY7JvYRW9FqgshIM-16" edge="1" source="C57uJY7JvYRW9FqgshIM-3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="322" y="679" as="sourcePoint" />
+            <mxPoint x="320" y="621" as="targetPoint" />
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="C57uJY7JvYRW9FqgshIM-6" value="RKI History" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;" parent="C57uJY7JvYRW9FqgshIM-5" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="C57uJY7JvYRW9FqgshIM-7" value="" style="endArrow=classic;html=1;entryX=0.735;entryY=1.01;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.887;exitY=-0.01;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" target="C57uJY7JvYRW9FqgshIM-16" edge="1" source="C57uJY7JvYRW9FqgshIM-3">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="420" y="680" as="sourcePoint" />
+            <mxPoint x="420" y="622" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="C57uJY7JvYRW9FqgshIM-8" value="RKI COVID19" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;" parent="C57uJY7JvYRW9FqgshIM-7" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="C57uJY7JvYRW9FqgshIM-13" value="" style="endArrow=none;html=1;exitX=0.413;exitY=-0.005;exitDx=0;exitDy=0;exitPerimeter=0;endFill=0;" parent="1" source="C57uJY7JvYRW9FqgshIM-3" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="230" y="620" as="sourcePoint" />
+            <mxPoint x="210" y="600" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="C57uJY7JvYRW9FqgshIM-14" value="RKI AdmUnit" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;" parent="C57uJY7JvYRW9FqgshIM-13" connectable="0" vertex="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="C57uJY7JvYRW9FqgshIM-16" value="Zeitreihe der Neuinfektionen, neuen Genesenen &amp;amp; Todesfällen" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="280" y="560" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="C57uJY7JvYRW9FqgshIM-19" value="" style="endArrow=classic;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" target="C57uJY7JvYRW9FqgshIM-16" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="210" y="600" as="sourcePoint" />
+            <mxPoint x="370" y="560" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XHsace0uavuUdTPFix8g-1" value="Zeitreihe der absoluten Kompartimentverteilung" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="470" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="XHsace0uavuUdTPFix8g-2" value="&lt;b&gt;Zeitreihe der relativen Kompartimentverteilung&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="280" y="400" width="200" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="XHsace0uavuUdTPFix8g-3" value="Population der Landkreise" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="400" width="170" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="XHsace0uavuUdTPFix8g-5" value="" style="endArrow=classic;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="XHsace0uavuUdTPFix8g-1" target="XHsace0uavuUdTPFix8g-2">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="380" y="460" as="sourcePoint" />
+            <mxPoint x="375" y="440" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XHsace0uavuUdTPFix8g-6" value="" style="endArrow=classic;html=1;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="210" y="600" as="sourcePoint" />
+            <mxPoint x="110" y="443" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XHsace0uavuUdTPFix8g-8" value="" style="endArrow=classic;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="C57uJY7JvYRW9FqgshIM-16">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="170" y="600" as="sourcePoint" />
+            <mxPoint x="380" y="510" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XHsace0uavuUdTPFix8g-9" value="Berechnung" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;" connectable="0" vertex="1" parent="XHsace0uavuUdTPFix8g-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XHsace0uavuUdTPFix8g-12" value="" style="endArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="XHsace0uavuUdTPFix8g-3" target="XHsace0uavuUdTPFix8g-2">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="225" y="480" as="sourcePoint" />
+            <mxPoint x="275" y="430" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
