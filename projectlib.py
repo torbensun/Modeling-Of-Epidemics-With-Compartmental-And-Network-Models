@@ -38,7 +38,7 @@ def unweight_adjacency(matrix):
 def region_setup(mode):
     """Assembles necessary AdmUnitIDs for future computations and labels for the chosen Region (12 or 38)
     Args:
-        mode (integer): clarifies chosen project Region: 12 for Region 12 or 38 for Region 38
+        mode (integer): clarifies chosen project Region: 1 for Göttingen only, 12 for Region 12 or 38 for Region 38
     Returns:
         tuple:
             array: contains RKI LK IDs of the respective intern regions (therefore of length mode), index is intern region number
@@ -86,7 +86,12 @@ def region_setup(mode):
     sk_salzgitter_id = 3102
     lk_peine_id = 3157
 
-    if(mode == 12):
+    if(mode == 1):
+        region_ids = [lk_göttingen_id]
+        region_names = ['Göttingen']
+        labels = {}
+        short_labels = {}
+    elif(mode == 12):
         region_ids = [lk_hildesheim_id,lk_holzminden_id,lk_goslar_id,lk_höxter_id,lk_northeim_id,lk_göttingen_id,lk_harz_id,lk_kassel_id,sk_kassel_id,lk_werrameißnerkreis_id,lk_eichsfeld_id,lk_nordhausen_id]
         region_names = ['Hildesheim','Holzminden','Goslar', 'Höxter','Northeim','Göttingen','Harz','Kassel (LK)','Kassel (SK)', 'Werra-Meißner-Kreis','Eichsfeld','Nordhausen']
         labels = {}
