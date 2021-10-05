@@ -26,6 +26,7 @@ Python:
   - matplotlib
   - scipy
   - networkx
+  
 C:
   - tgmath.h
   - math.h
