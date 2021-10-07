@@ -581,7 +581,28 @@ def squared_variance(numerical_data, external_data):
     return sum
 
 
+#Runge-Kutta Method Single Time Step
+def rk4(func,t,y,dt):
+    """
+    Peforms a single time step of the Runge-Kutta 4th Order Method.
+    The below function finds the ki value for func and return the value to move Yn+1
+    func is the rhs of Y'
+    
+    Recall Rk4 Equations :
+    k1 = h*func(tn,yn)
+    k2 = h*func(tn+h/2,yn+k1/2)
+    k3 = h*func(tn+h/2,yn+k2/2)
+    k4 = h*func(tn,yn+k3)
+    Where func is the function of the derivative(s) dy/dt
+    Yn+1 = Yn + 1/6*(k1+k2+k3+k4)
+    """
 
+    k1 = dt*func(t,y)
+    k2 = dt*func(t+dt/2,y+k1/2)
+    k3 = dt*funcpr(t+dt/2,y+k2/2)
+    k4 = dt*func(t+dt,y+k3)
+
+    return (1/6)*(k1+k2+k3+k4)
 
 
 
