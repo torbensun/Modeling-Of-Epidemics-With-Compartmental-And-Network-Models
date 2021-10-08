@@ -25,6 +25,7 @@ Python:
   - numpy
   - matplotlib
   - scipy
+  - joblib
   - networkx
   
 C:
