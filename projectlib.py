@@ -345,6 +345,8 @@ def n_day_incidence(case_array,pop,n):
     return n*n_day_moving_average(case_array,n)/pop*100000
 
 
+#Section 2.3: Commuter related functions
+
 def remaining_population(comFrom, N, i):
     """Function to calculate the remaining population in a cell during commuting stage = N_i^{rest} in document
 
@@ -476,8 +478,244 @@ def periodic_heaviside(t, t0):
         return np.heaviside(t - t0, 1)
 
 
+#Section 2.4: Class
+
+class Data:
+    def __init__(self, alpha, beta, dimension, name, commuters_day, N):
+        "Dimension gives the dimension of the system, i.e. number of cells"
+        # ------- TO DO ---------
+        # Depending on the system this has to be adjusted
+        self.dimension = dimension
+        
+        "Alpha describes the rate of infection"
+        self.alpha = alpha # Dimensions day^(-1)
+
+        "Beta describes the recovery rate"
+        self.beta = beta # Dimensions day^(-1)
+
+        "p is the probability to die from the disease"
+        self.p = 2.64e-2
+        
+        """
+        Commuters is an array describing the commuters from and to the different cells. 
+        The structure is: The entries in column i are how many commute from i to the cell of the row.
+                          Thus, the entries of the row i describe how many commute from different cells to cell i.
+        """
+
+        self.commuters = np.array([np.ones(self.dimension) for i in range(self.dimension)])
+        "load the txt with given name"
+        file = np.loadtxt(name, delimiter="\t")
+        "fill commuters with the entries from the file. Note the break statement so it doesn't go to far"
+        i = 0
+        for row in file:
+            if i >= self.dimension:
+                break
+            self.commuters[i] = np.asarray(row[0:self.dimension])
+            i += 1
+        
+        "Part of day that commuters are in other cells. This is the same value for all cells"
+        self.commuters_day = commuters_day
+
+        "Array of population in every cell"
+        # ------- TO DO ---------
+        # figure out how to best do this
+        self.N = N
+
+        
+        
+    def commutersFrom(self, cfrom):
+        """Function to extract the commuters from a cell
+
+        Args:
+            cfrom (integer): the cell 
+
+         Returns:
+            array: array containing commuters from cfrom
+        """
+        # ------- TO DO ---------
+        # optimize the algorithm
+        "Sorting out the necessary entries into array a."
+        a = np.zeros(self.dimension)
+        for i in range(self.dimension):
+            a[i] = self.commuters[i][cfrom]
+            
+        return a 
+    
+    def commutersTo(self, cto):
+        """Function to return an array with number of commuters coming to cto from other cells.
+
+        Args:
+            cto (integer): the cell to which the commuters travel
+
+        Returns:
+            array: array containing the commuters to cto.
+        """
+        return self.commuters[cto][:]
 
 
+
+#Section 2.5: ODE functions
+
+def simple_system(timestep, functions, data):
+    """Function to calculate the time derivatives of the SIRD modell without commuters. The system may be one specific district (LK), several districts combined or the whole area, this is up to the user (input).
+
+        Args:
+            timestep (float): time of timestep. t=1 is 1 day
+            functions (array or list): array with the scalar functions (compartments) of the system. Structure [S, I, R, D]
+            data (class): the class with the relevant data.
+
+        Returns:
+            list: list containing the derivatives of functions at time t.
+    """
+    S,I,R,D = functions
+    dfuncdt = [0,0,0,0]
+
+    # dS/dt
+    dfuncdt[0] =  - data.alpha * S * I
+
+    # dI/dt \propto -dSdt
+    dfuncdt[1] = - dfuncdt[0] - data.beta * I
+
+    # dR/dt
+    dfuncdt[2] = (1 - data.p) * data.beta * I
+
+    # dD/dt
+    dfuncdt[3] = data.p * data.beta * I
+
+    return dfuncdt   
+
+
+def function_of_system(timestep, functions,  data, method, t0):
+    """Function to calculate the time derivatives of the dynamic SIRD modell with commuters. This function uses multiple approachs for different variant of the system based on prior assumptions. 
+
+        Args:
+            functions (array): array with the functions that define the system of equations. Structure [S_1, ... , S_n, I_1, .... , I_n, R_1, ... , R_n, D_1, ... , D_n]
+            timestep (float): time of timestep. t=1 is 1 day
+            data (class): the class with the relevant data
+            method (string): dictates what method is to be used. The choices are "constant", "heaviside"
+            t0 (array): array with len = 3 filled with times at which the heaviside functions in the "heaviside" method switch. 
+                Note: all values of t0 have to be between 0 and 1.
+
+        Returns:
+            array: array containing the derivatives of functions at time t.
+    """
+    # array with infected
+    Infected = functions[data.dimension:2*data.dimension]
+
+    # initializing the return array with the time derivatives of functions
+    dfuncdt = np.zeros(data.dimension*4)
+
+    "~~~~~~~~~~~~~~~~~ See the PDF / LaTeX for further explanation of the equations ~~~~~~~~~~~~~~~~~~~~~~~~"
+
+    # ------------------------------------
+    # -     Without commuting effects    -
+    # ------------------------------------
+    
+    if method == 'simple':
+
+        "Please use the function simple_system for the method 'simple'"
+    
+        # dS/dt
+        dfuncdt[0:data.dimension] =  - data.alpha * functions[:data.dimension] * Infected
+
+        # dI/dt \propto -dSdt
+        dfuncdt[data.dimension:2*data.dimension] = - dfuncdt[0:data.dimension] - data.beta * Infected
+
+        # dR/dt
+        dfuncdt[2*data.dimension:3*data.dimension] = (1 - data.p) * data.beta * Infected
+
+        # dD/dt
+        dfuncdt[3*data.dimension:] = data.p * data.beta * Infected
+            
+        
+    
+    
+    # making array with the effective infected Ieff
+    Ieff = np.array([effective_infected(data.commutersTo, data.commutersFrom, data.N, i, Infected, data.dimension) for i in range(data.dimension)])
+        
+    # ------------------------------------
+    # -      Constant Coefficients       -
+    # ------------------------------------
+
+    if method == "constant":
+
+        t_out = data.commuters_day #time in another vertex
+            
+        # the for loop to fill dfuncdt
+
+        for i in range(data.dimension):
+            # see LaTeX for equations
+            # dS/dt
+            dfuncdt[i] =  - (1 - t_out) * data.alpha *  functions[i] * functions[i + data.dimension] - t_out * data.alpha * functions[i] * Ieff[i]
+
+            # dI/dt \propto -dSdt
+            dfuncdt[i + data.dimension] = - dfuncdt[i] - data.beta * functions[i + data.dimension]
+
+            # dR/dt
+            dfuncdt[i + 2 * data.dimension] = (1 - data.p) * data.beta * functions[i + data.dimension]
+
+            # dD/dt
+            dfuncdt[i + 3 * data.dimension] = data.p * data.beta * functions[i + data.dimension]
+
+
+    # ------------------------------------
+    # -      Heaviside Coefficients      -
+    # ------------------------------------
+
+    elif method == "heaviside":
+
+
+        # the for loop to fill dfuncdt
+        for i in range(data.dimension):
+            # see LaTeX for equations
+            # dS/dt
+            dfuncdt[i] = - data.alpha * (periodic_heaviside(timestep, t0[0]) + periodic_heaviside(timestep, t0[2]) - 1) * functions[i] * functions[i + data.dimension] - (periodic_heaviside(timestep, t0[1]) - periodic_heaviside(timestep, t0[2])) * data.alpha * functions[i] * Ieff[i]
+
+            # dI/dt \propto -dSdt
+            dfuncdt[i + data.dimension] = - dfuncdt[i] - data.beta * functions[i + data.dimension]
+
+            # dR/dt
+            dfuncdt[i + 2 * data.dimension] = (1 - data.p) * data.beta * functions[i + data.dimension]
+
+            # dD/dt
+            dfuncdt[i + 3 * data.dimension] = data.p * data.beta * functions[i + data.dimension]
+
+    
+    # returning the derivatives at time t
+    return dfuncdt
+
+
+def system_function(functions, timestep, data, method, t0):
+    # Function for using scipy.integrate.odeint, as the arguments are switched
+
+    return function_of_system(timestep, functions, data, method, t0)
+
+
+def rk4(func,t,y,dt):
+    # Runge-Kutta Method Single Time Step
+    """
+    Peforms a single time step of the Runge-Kutta 4th Order Method.
+    The below function finds the ki value for func and return the value to move Yn+1
+    func is the rhs of Y'
+    
+    Recall Rk4 Equations :
+    k1 = h*func(tn,yn)
+    k2 = h*func(tn+h/2,yn+k1/2)
+    k3 = h*func(tn+h/2,yn+k2/2)
+    k4 = h*func(tn,yn+k3)
+    Where func is the function of the derivative(s) dy/dt
+    Yn+1 = Yn + 1/6*(k1+k2+k3+k4)
+    """
+
+    k1 = dt*func(t,y)
+    k2 = dt*func(t+dt/2,y+k1/2)
+    k3 = dt*func(t+dt/2,y+k2/2)
+    k4 = dt*func(t+dt,y+k3)
+
+    return (1/6)*(k1+k2+k3+k4)
+
+
+#Section 2.6: Jacobian
 
 def jacobi(data, comp, model, t0):
 
@@ -543,7 +781,7 @@ def jacobi(data, comp, model, t0):
     return jac
 
 
-#Section 2.3: Data Visualization
+#Section 2.7: Data Visualization
 
 
 
@@ -552,7 +790,7 @@ def jacobi(data, comp, model, t0):
 
 
 
-#Section 2.4: Comparing Data
+#Section 2.8: Comparing Data
 
 
 
@@ -579,30 +817,5 @@ def squared_variance(numerical_data, external_data):
         sum += (numerical_data[i] - external_data[i])**2
     
     return sum
-
-
-#Runge-Kutta Method Single Time Step
-def rk4(func,t,y,dt):
-    """
-    Peforms a single time step of the Runge-Kutta 4th Order Method.
-    The below function finds the ki value for func and return the value to move Yn+1
-    func is the rhs of Y'
-    
-    Recall Rk4 Equations :
-    k1 = h*func(tn,yn)
-    k2 = h*func(tn+h/2,yn+k1/2)
-    k3 = h*func(tn+h/2,yn+k2/2)
-    k4 = h*func(tn,yn+k3)
-    Where func is the function of the derivative(s) dy/dt
-    Yn+1 = Yn + 1/6*(k1+k2+k3+k4)
-    """
-
-    k1 = dt*func(t,y)
-    k2 = dt*func(t+dt/2,y+k1/2)
-    k3 = dt*funcpr(t+dt/2,y+k2/2)
-    k4 = dt*func(t+dt,y+k3)
-
-    return (1/6)*(k1+k2+k3+k4)
-
 
 
