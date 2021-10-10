@@ -44,6 +44,8 @@ C:
 
   - Internal Data - Processed data to make life easier
 
+  - C - The C scripts and additional python script used for plotting 
+
 ### Scipts:
   - Python & Jupyter Notebook:
       - projectlib.py - Library containing the main functions of the project
