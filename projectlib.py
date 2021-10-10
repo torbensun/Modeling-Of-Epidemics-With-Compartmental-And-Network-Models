@@ -1,6 +1,6 @@
 #Project Library
 
-#recommended modules (auto-import not possible?)
+#required modules
 import numpy as np
 import pandas as pd
 import networkx as nx
@@ -781,16 +781,9 @@ def jacobi(data, comp, model, t0):
     return jac
 
 
-#Section 2.7: Data Visualization
 
 
-
-
-
-
-
-
-#Section 2.8: Comparing Data
+#Section 2.7: Comparing Data
 
 
 
@@ -818,4 +811,18 @@ def squared_variance(numerical_data, external_data):
     
     return sum
 
+# Section 2.8 Representations of Data in LaTex
 
+def bmatrix(a):
+    """Returns a LaTeX bmatrix
+
+    :a: numpy array
+    :returns: LaTeX bmatrix as a string
+    """
+    if len(a.shape) > 2:
+        raise ValueError('bmatrix can at most display two dimensions')
+    lines = str(a).replace('[', '').replace(']', '').splitlines()
+    rv = [r'\begin{bmatrix}']
+    rv += ['  ' + ' & '.join(l.split()) + r'\\' for l in lines]
+    rv +=  [r'\end{bmatrix}']
+    return '\n'.join(rv)
